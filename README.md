@@ -7,8 +7,17 @@ The application start on [http://localhost:8080](http://localhost:8080).
 ## Dev Requirements
 
 * Download and Install [Java Development Kit](https://www.oracle.com/java/technologies/downloads/#jdk17) v17.0+
+    * Add `JAVA_HOME`
+    * Update `PATH`
 * Download and Install [Maven](https://maven.apache.org/download.cgi) v3.8.4+
+    * Add `MAVEN_HOME`
+    * Update `PATH`
 * Download and Install [MySQL Server](https://dev.mysql.com/downloads/installer/) v8.0+
+* IDEA Configuration for Spring Dev Tools
+    * The Spring Dev Tools enable __hot-swap__ the make development faster. When a __new Build__ gets started, it
+      automatically restarts the application. To make the best use of it, activate following settings:
+        * `Settings > Build, Execution, Deployment > Compiler > Build project automatically`
+        * `Registry > compiler.automake.allow.when.app.running`
 
 ## Dependencies
 
