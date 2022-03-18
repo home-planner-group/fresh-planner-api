@@ -1,7 +1,7 @@
 package com.freshplanner.api.controller;
 
-import com.freshplanner.api.controller.model.ApiError;
 import com.freshplanner.api.exception.ElementNotFoundException;
+import com.freshplanner.api.model.error.ApiError;
 import com.freshplanner.api.utility.ApiLogger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

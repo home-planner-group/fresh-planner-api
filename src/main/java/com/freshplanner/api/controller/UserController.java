@@ -1,13 +1,13 @@
 package com.freshplanner.api.controller;
 
-import com.freshplanner.api.controller.model.JwtModel;
-import com.freshplanner.api.controller.model.LoginRequest;
-import com.freshplanner.api.controller.model.UserModel;
-import com.freshplanner.api.controller.model.UserModification;
+import com.freshplanner.api.database.enums.RoleName;
 import com.freshplanner.api.database.user.Role;
-import com.freshplanner.api.database.user.RoleName;
 import com.freshplanner.api.database.user.UserDB;
 import com.freshplanner.api.exception.ElementNotFoundException;
+import com.freshplanner.api.model.user.JwtModel;
+import com.freshplanner.api.model.user.LoginRequest;
+import com.freshplanner.api.model.user.UserModel;
+import com.freshplanner.api.model.user.UserModification;
 import com.freshplanner.api.security.JwtManager;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

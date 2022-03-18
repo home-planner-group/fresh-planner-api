@@ -1,4 +1,4 @@
-package com.freshplanner.api.controller.model;
+package com.freshplanner.api.model.user;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

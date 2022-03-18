@@ -1,4 +1,6 @@
-package com.freshplanner.api.database.user;
+package com.freshplanner.api.database.enums;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,5 +18,10 @@ public enum RoleName {
 
     public static List<RoleName> getAll() throws RuntimeException {
         return streamAll().collect(Collectors.toList());
+    }
+
+    @JsonCreator // decodes @RequestBody
+    public static RoleName decode(String value) throws RuntimeException {
+        return EnumExtension.decode(streamAll(), value);
     }
 }

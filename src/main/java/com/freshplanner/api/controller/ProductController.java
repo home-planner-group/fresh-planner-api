@@ -1,7 +1,7 @@
 package com.freshplanner.api.controller;
 
-import com.freshplanner.api.controller.model.ProductModel;
 import com.freshplanner.api.database.product.ProductDB;
+import com.freshplanner.api.model.product.ProductModel;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

@@ -1,5 +1,6 @@
 package com.freshplanner.api.database.user;
 
+import com.freshplanner.api.database.enums.RoleName;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.Hibernate;

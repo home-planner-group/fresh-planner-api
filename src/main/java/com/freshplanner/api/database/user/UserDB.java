@@ -1,8 +1,9 @@
 package com.freshplanner.api.database.user;
 
-import com.freshplanner.api.controller.model.UserModification;
+import com.freshplanner.api.database.enums.RoleName;
 import com.freshplanner.api.exception.ElementNotFoundException;
 import com.freshplanner.api.exception.InvalidPasswordException;
+import com.freshplanner.api.model.user.UserModification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
