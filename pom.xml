@@ -55,6 +55,27 @@
             <optional>true</optional>
         </dependency>
         <!-- ∧ Lombok for lightweight Class Code -->
+        <!-- ⋁ Spring Boot Security with manual JWT -->
+        <dependency>
+            <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+        <!-- ∧ Spring Boot Security with manual JWT -->
+        <!-- ⋁ Spring Boot Request Validation -->
+        <dependency>
+            <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation -->
+            <!-- Tutorial: https://www.baeldung.com/spring-boot-bean-validation -->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <!-- ∧ Spring Boot Request Validation -->
         <!-- ⋁ Web Testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
