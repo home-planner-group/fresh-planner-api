@@ -10,8 +10,8 @@ import com.freshplanner.api.model.authentication.RegistrationModel;
 import com.freshplanner.api.model.authentication.UserAuthModel;
 import com.freshplanner.api.model.authentication.UserInfoModel;
 import com.freshplanner.api.security.JwtManager;
+import com.freshplanner.api.security.SecurityContext;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/auth")
 public class AuthenticationController {
 
     private final UserDB userDB;
@@ -54,7 +54,7 @@ public class AuthenticationController {
      * @return {@link UserAuthModel} with the token and additional information
      */
     @ApiOperation("Login for access to the API.")
-    @PostMapping(path = "/auth/login", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserAuthModel> login(@Valid @RequestBody LoginModel request) throws ElementNotFoundException {
         User userModel = userDB.getUserByName(request.getUsername());
         Authentication authentication = authenticationManager.authenticate(
@@ -67,7 +67,7 @@ public class AuthenticationController {
     }
 
     @ApiOperation("Register for access to the API.")
-    @PostMapping(path = "/auth/register", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserAuthModel> register(@Valid @RequestBody RegistrationModel request) throws ElementNotFoundException {
         userDB.addUser(request);
         return login(new LoginModel(request.getUsername(), request.getPassword()));
@@ -75,17 +75,16 @@ public class AuthenticationController {
 
     // === GET =========================================================================================================
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
     @ApiOperation("Get the userinfo about this authentication.")
     @GetMapping(path = "/info", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserInfoModel> getUserInfo(
-            @ApiParam(value = "Username for details.", example = "MaxMastermind", required = true)
-            @RequestParam("name") String username) throws ElementNotFoundException {
-        return ResponseEntity.ok(new UserInfoModel(userDB.getUserByName(username)));
+    public ResponseEntity<UserInfoModel> getUserInfo() throws ElementNotFoundException {
+        return ResponseEntity.ok(new UserInfoModel(
+                userDB.getUserByName(SecurityContext.extractUsername())));
     }
 
     @ApiOperation("Get all possible values of: Auth Database - Roles")
-    @GetMapping(path = "/roles/get-all", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/roles", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<RoleName>> getAuthRoles() {
         return ResponseEntity.ok(userDB.getAllRoles()
                 .stream().map(Role::getName).collect(Collectors.toList()));
@@ -93,14 +92,11 @@ public class AuthenticationController {
 
     // === DELETE ======================================================================================================
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
     @ApiOperation("Delete authentication by name.")
     @DeleteMapping(path = "/delete", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserInfoModel> deleteUser(
-            @ApiParam(value = "Username to delete.", example = "Max")
-            @RequestParam("name") String username)
-            throws ElementNotFoundException {
-
-        return ResponseEntity.ok(new UserInfoModel(userDB.deleteUserById(username)));
+    public ResponseEntity<UserInfoModel> deleteUser() throws ElementNotFoundException {
+        return ResponseEntity.ok(new UserInfoModel(
+                userDB.deleteUserById(SecurityContext.extractUsername())));
     }
 }
