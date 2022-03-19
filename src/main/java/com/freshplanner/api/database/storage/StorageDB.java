@@ -3,7 +3,7 @@ package com.freshplanner.api.database.storage;
 import com.freshplanner.api.database.product.ProductDB;
 import com.freshplanner.api.database.user.User;
 import com.freshplanner.api.exception.ElementNotFoundException;
-import com.freshplanner.api.model.storage.StorageItemModification;
+import com.freshplanner.api.model.storage.StorageModel;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 
@@ -46,7 +46,7 @@ public record StorageDB(StorageRepo storageRepo,
      *
      * @param storageId for identification
      * @param username  to validate
-     * @throws AccessDeniedException if user is not associated
+     * @throws AccessDeniedException if authentication is not associated
      */
     public void validateUserForStorage(Integer storageId, String username) throws AccessDeniedException {
         Optional<Integer> resultId = storageRepo.findStorageByIdAndUser(storageId, username);
@@ -76,7 +76,7 @@ public record StorageDB(StorageRepo storageRepo,
     /**
      * INSERT
      *
-     * @param user associated user
+     * @param user associated authentication
      * @return created object
      */
     public Storage addStorage(User user) {
@@ -90,8 +90,8 @@ public record StorageDB(StorageRepo storageRepo,
      * @return created object
      * @throws ElementNotFoundException if associated id does not exist
      */
-    public StorageItem addStorageItem(StorageItemModification modification) throws ElementNotFoundException {
-        StorageItem item = new StorageItem(this.getStorageById(modification.getStorageId()),
+    public StorageItem addStorageItem(int storageId, StorageModel.Item modification) throws ElementNotFoundException {
+        StorageItem item = new StorageItem(this.getStorageById(storageId),
                 productSelector.getProductById(modification.getProductId()),
                 modification.getCount());
         return storageItemRepo.save(item);
@@ -104,8 +104,8 @@ public record StorageDB(StorageRepo storageRepo,
      * @return updated object
      * @throws ElementNotFoundException if associated id does not exist
      */
-    public StorageItem updateStorageItem(StorageItemModification modification) throws ElementNotFoundException {
-        StorageItem item = this.getStorageItemById(modification.getStorageId(), modification.getProductId());
+    public StorageItem updateStorageItem(int storageId, StorageModel.Item modification) throws ElementNotFoundException {
+        StorageItem item = this.getStorageItemById(storageId, modification.getProductId());
         return storageItemRepo.save(item.setCount(modification.getCount()));
     }
 

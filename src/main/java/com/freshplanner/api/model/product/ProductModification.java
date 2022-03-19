@@ -4,11 +4,11 @@ import com.freshplanner.api.database.enums.Unit;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
 @ApiModel
-@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductModification {

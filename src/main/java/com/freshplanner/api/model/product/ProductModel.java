@@ -4,12 +4,14 @@ import com.freshplanner.api.database.enums.Unit;
 import com.freshplanner.api.database.product.Product;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
 @ApiModel
-@Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class ProductModel {
 
     @ApiModelProperty(value = "Generated database id", example = "1")

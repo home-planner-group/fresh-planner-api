@@ -2,12 +2,13 @@ package com.freshplanner.api.controller;
 
 import com.freshplanner.api.database.enums.RoleName;
 import com.freshplanner.api.database.user.Role;
+import com.freshplanner.api.database.user.User;
 import com.freshplanner.api.database.user.UserDB;
 import com.freshplanner.api.exception.ElementNotFoundException;
-import com.freshplanner.api.model.user.JwtModel;
-import com.freshplanner.api.model.user.LoginRequest;
-import com.freshplanner.api.model.user.UserModel;
-import com.freshplanner.api.model.user.UserModification;
+import com.freshplanner.api.model.authentication.LoginModel;
+import com.freshplanner.api.model.authentication.RegistrationModel;
+import com.freshplanner.api.model.authentication.UserAuthModel;
+import com.freshplanner.api.model.authentication.UserInfoModel;
 import com.freshplanner.api.security.JwtManager;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/user")
-public class UserController {
+public class AuthenticationController {
 
     private final UserDB userDB;
     private final AuthenticationManager authenticationManager;
@@ -38,7 +39,7 @@ public class UserController {
     private String jwtType;
 
     @Autowired
-    public UserController(UserDB userDB, AuthenticationManager authenticationManager, JwtManager jwtManager) {
+    public AuthenticationController(UserDB userDB, AuthenticationManager authenticationManager, JwtManager jwtManager) {
         this.userDB = userDB;
         this.authenticationManager = authenticationManager;
         this.jwtManager = jwtManager;
@@ -49,38 +50,38 @@ public class UserController {
     /**
      * Creates a JWT with the credentials and sets the authority into the SecurityContext.
      *
-     * @param request {@link LoginRequest} with the credentials to create to JWT
-     * @return {@link JwtModel} with the token and additional information
+     * @param request {@link LoginModel} with the credentials to create to JWT
+     * @return {@link UserAuthModel} with the token and additional information
      */
     @ApiOperation("Login for access to the API.")
     @PostMapping(path = "/auth/login", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<JwtModel> login(@Valid @RequestBody LoginRequest request) throws ElementNotFoundException {
-        UserModel userModel = new UserModel(userDB.getUserByName(request.getUsername()));
+    public ResponseEntity<UserAuthModel> login(@Valid @RequestBody LoginModel request) throws ElementNotFoundException {
+        User userModel = userDB.getUserByName(request.getUsername());
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtManager.generateJwtToken(authentication);
 
-        return ResponseEntity.ok(new JwtModel(jwt, jwtType, userModel));
+        return ResponseEntity.ok(new UserAuthModel(userModel, jwt, jwtType));
     }
 
     @ApiOperation("Register for access to the API.")
     @PostMapping(path = "/auth/register", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<JwtModel> register(@Valid @RequestBody UserModification request) throws ElementNotFoundException {
+    public ResponseEntity<UserAuthModel> register(@Valid @RequestBody RegistrationModel request) throws ElementNotFoundException {
         userDB.addUser(request);
-        return login(new LoginRequest(request.getUsername(), request.getPassword()));
+        return login(new LoginModel(request.getUsername(), request.getPassword()));
     }
 
     // === GET =========================================================================================================
 
     @PreAuthorize("hasRole('ADMIN')")
-    @ApiOperation("Get the userinfo about this user.")
+    @ApiOperation("Get the userinfo about this authentication.")
     @GetMapping(path = "/info", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserModel> getUserInfo(
+    public ResponseEntity<UserInfoModel> getUserInfo(
             @ApiParam(value = "Username for details.", example = "MaxMastermind", required = true)
             @RequestParam("name") String username) throws ElementNotFoundException {
-        return ResponseEntity.ok(new UserModel(userDB.getUserByName(username)));
+        return ResponseEntity.ok(new UserInfoModel(userDB.getUserByName(username)));
     }
 
     @ApiOperation("Get all possible values of: Auth Database - Roles")
@@ -93,13 +94,13 @@ public class UserController {
     // === DELETE ======================================================================================================
 
     @PreAuthorize("hasRole('ADMIN')")
-    @ApiOperation("Delete user by name.")
+    @ApiOperation("Delete authentication by name.")
     @DeleteMapping(path = "/delete", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserModel> deleteUser(
+    public ResponseEntity<UserInfoModel> deleteUser(
             @ApiParam(value = "Username to delete.", example = "Max")
             @RequestParam("name") String username)
             throws ElementNotFoundException {
 
-        return ResponseEntity.ok(new UserModel(userDB.deleteUserById(username)));
+        return ResponseEntity.ok(new UserInfoModel(userDB.deleteUserById(username)));
     }
 }

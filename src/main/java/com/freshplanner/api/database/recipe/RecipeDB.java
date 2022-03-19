@@ -2,8 +2,7 @@ package com.freshplanner.api.database.recipe;
 
 import com.freshplanner.api.database.product.ProductDB;
 import com.freshplanner.api.exception.ElementNotFoundException;
-import com.freshplanner.api.model.recipe.RecipeItemModification;
-import com.freshplanner.api.model.recipe.RecipeModification;
+import com.freshplanner.api.model.recipe.RecipeModel;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -63,7 +62,7 @@ public record RecipeDB(RecipeRepo recipeRepo,
      * @param modification with input data
      * @return created object
      */
-    public Recipe addRecipe(RecipeModification modification) {
+    public Recipe addRecipe(RecipeModel modification) {
         return recipeRepo.save(new Recipe(
                 modification.getName(),
                 modification.getCategory(),
@@ -77,9 +76,9 @@ public record RecipeDB(RecipeRepo recipeRepo,
      * @return created object
      * @throws ElementNotFoundException if associated id does not exist
      */
-    public RecipeItem addRecipeItem(RecipeItemModification modification) throws ElementNotFoundException {
+    public RecipeItem addRecipeItem(int recipeId, RecipeModel.Item modification) throws ElementNotFoundException {
         return recipeItemRepo.save(new RecipeItem(
-                this.getRecipeById(modification.getRecipeId()),
+                this.getRecipeById(recipeId),
                 productSelector.getProductById(modification.getProductId()),
                 modification.getCount(),
                 modification.getDescription()));
@@ -88,15 +87,14 @@ public record RecipeDB(RecipeRepo recipeRepo,
     /**
      * UPDATE
      *
-     * @param recipeId     associated recipe id
      * @param modification with input data
      * @return updated object
      * @throws ElementNotFoundException if id does not exist
      */
-    public Recipe updateRecipe(Integer recipeId, RecipeModification modification) throws ElementNotFoundException {
+    public Recipe updateRecipe(RecipeModel modification) throws ElementNotFoundException {
         return recipeRepo.save(
                 this.modifyRecipe(
-                        this.getRecipeById(recipeId),
+                        this.getRecipeById(modification.getId()),
                         modification));
     }
 
@@ -107,9 +105,9 @@ public record RecipeDB(RecipeRepo recipeRepo,
      * @return updated object
      * @throws ElementNotFoundException if id does not exist
      */
-    public RecipeItem updateRecipeItem(RecipeItemModification modification) throws ElementNotFoundException {
+    public RecipeItem updateRecipeItem(int recipeId, RecipeModel.Item modification) throws ElementNotFoundException {
         return recipeItemRepo.save(
-                this.getRecipeItemById(modification.getRecipeId(), modification.getProductId())
+                this.getRecipeItemById(recipeId, modification.getProductId())
                         .setCount(modification.getCount())
                         .setDescription(modification.getDescription()));
     }
@@ -143,7 +141,7 @@ public record RecipeDB(RecipeRepo recipeRepo,
 
     // === UTILITY =====================================================================================================
 
-    private Recipe modifyRecipe(Recipe recipe, RecipeModification modification) {
+    private Recipe modifyRecipe(Recipe recipe, RecipeModel modification) {
         if (modification.getName() != null) {
             recipe.setName(modification.getName());
         }

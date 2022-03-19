@@ -3,7 +3,7 @@ package com.freshplanner.api.database.user;
 import com.freshplanner.api.database.enums.RoleName;
 import com.freshplanner.api.exception.ElementNotFoundException;
 import com.freshplanner.api.exception.InvalidPasswordException;
-import com.freshplanner.api.model.user.UserModification;
+import com.freshplanner.api.model.authentication.RegistrationModel;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -40,13 +40,13 @@ public record UserDB(RoleRepo roleRepo, UserRepo userRepo, PasswordEncoder encod
     // === INSERT ======================================================================================================
 
     /**
-     * Creates a new user in the DB with {@link RoleName#ROLE_USER} as default.
+     * Creates a new authentication in the DB with {@link RoleName#ROLE_USER} as default.
      * TODO password should be encoded on client side for more security
      *
-     * @param request {@link UserModification} with all required information
-     * @return new user with default role
+     * @param request {@link RegistrationModel} with all required information
+     * @return new authentication with default role
      */
-    public User addUser(UserModification request) {
+    public User addUser(RegistrationModel request) {
         User user = new User(request.getUsername(), request.getEmail(), encoder.encode(request.getPassword()));
         user.addRole(RoleName.ROLE_USER);
         return userRepo.save(user);
@@ -56,8 +56,8 @@ public record UserDB(RoleRepo roleRepo, UserRepo userRepo, PasswordEncoder encod
 
     /**
      * @param username for DB (case-insensitive)
-     * @param role     to associate with the user
-     * @return updated user
+     * @param role     to associate with the authentication
+     * @return updated authentication
      * @throws ElementNotFoundException if username does not exist
      */
     public User addRoleToUser(String username, RoleName role) throws ElementNotFoundException {
@@ -66,8 +66,8 @@ public record UserDB(RoleRepo roleRepo, UserRepo userRepo, PasswordEncoder encod
 
     /**
      * @param username for DB (case-insensitive)
-     * @param role     to remove from the user
-     * @return updated user
+     * @param role     to remove from the authentication
+     * @return updated authentication
      * @throws ElementNotFoundException if username does not exist
      */
     public User removeRoleFromUser(String username, RoleName role) throws ElementNotFoundException {
@@ -78,7 +78,7 @@ public record UserDB(RoleRepo roleRepo, UserRepo userRepo, PasswordEncoder encod
 
     /**
      * @param username for DB (case-insensitive)
-     * @return removed user
+     * @return removed authentication
      * @throws ElementNotFoundException if username does not exist
      */
     public User deleteUserById(String username) throws ElementNotFoundException {
@@ -101,7 +101,7 @@ public record UserDB(RoleRepo roleRepo, UserRepo userRepo, PasswordEncoder encod
         if (password.equals(user.getPassword()) || encoder.matches(password, user.getPassword())) {
             return user;
         } else {
-            throw new InvalidPasswordException("Invalid password for user: " + user.getName());
+            throw new InvalidPasswordException("Invalid password for authentication: " + user.getName());
         }
     }
 }

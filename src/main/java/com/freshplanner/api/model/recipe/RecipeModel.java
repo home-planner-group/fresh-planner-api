@@ -1,19 +1,22 @@
 package com.freshplanner.api.model.recipe;
 
+import com.freshplanner.api.database.enums.Unit;
 import com.freshplanner.api.database.product.Product;
 import com.freshplanner.api.database.recipe.Recipe;
 import com.freshplanner.api.database.recipe.RecipeItem;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Data
 @ApiModel
-@Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class RecipeModel {
 
     @ApiModelProperty(value = "Recipe database id", example = "1")
@@ -25,10 +28,11 @@ public class RecipeModel {
     @ApiModelProperty(value = "Category of the product", example = "Pasta")
     private String category;
 
+    @ApiModelProperty(value = "Duration of the recipe", example = "15")
+    private Integer duration;
+
     @ApiModelProperty(value = "Name of the recipe", example = "Cook and Eat")
     private String description;
-
-    private List<RecipeItemModel> items;
 
     @ApiModelProperty(value = "kCal per 100g", example = "400")
     private Float kcal;
@@ -42,12 +46,15 @@ public class RecipeModel {
     @ApiModelProperty(value = "Fat per 100g", example = "10")
     private Float fat;
 
+    private List<Item> items;
+
     public RecipeModel(Recipe recipe) {
         this.id = recipe.getId();
         this.name = recipe.getName();
         this.category = recipe.getCategory();
+        this.duration = 404; // TODO implement recipe duration
         this.description = recipe.getDescription();
-        this.items = recipe.getRecipeItems().stream().map(RecipeItemModel::new).collect(Collectors.toList());
+        this.items = recipe.getRecipeItems().stream().map(Item::new).collect(Collectors.toList());
         if (recipe.getRecipeItems().size() > 0) {
             this.kcal = 0f;
             this.carbohydrates = 0f;
@@ -60,6 +67,36 @@ public class RecipeModel {
                 this.protein += product.getProtein() * item.getCount();
                 this.fat += product.getFat() * item.getCount();
             }
+        }
+    }
+
+    @Data
+    @ApiModel
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Item {
+
+        @ApiModelProperty(value = "Product database id", example = "1")
+        private Integer productId;
+
+        @ApiModelProperty(value = "Product name", example = "Apple")
+        private String productName;
+
+        @ApiModelProperty(value = "Item count in product unit", example = "1")
+        private Float count;
+
+        @ApiModelProperty(value = "Item unit", example = "GRAM")
+        private Unit unit;
+
+        @ApiModelProperty(value = "Item description", example = "small")
+        private String description;
+
+        public Item(RecipeItem item) {
+            this.productId = item.getProduct().getId();
+            this.productName = item.getProduct().getName();
+            this.count = item.getCount();
+            this.unit = item.getProduct().getUnit();
+            this.description = item.getDescription();
         }
     }
 }
