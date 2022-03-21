@@ -2,16 +2,25 @@ package com.freshplanner.api.database.product;
 
 import com.freshplanner.api.exception.ElementNotFoundException;
 import com.freshplanner.api.model.product.ProductModel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
 @Component
-public record ProductDB(ProductRepo productRepo) {
+public class ProductDB {
+
+    private final ProductRepo productRepo;
+
+    @Autowired
+    public ProductDB(ProductRepo productRepo) {
+        this.productRepo = productRepo;
+    }
 
     /**
-     * SELECT
+     * SELECT product WHERE productId
      *
      * @param productId database id
      * @return result object
@@ -27,50 +36,43 @@ public record ProductDB(ProductRepo productRepo) {
     }
 
     /**
-     * SELECT
+     * SELECT product WHERE LIKE productName
      *
      * @param productName partial product name
-     * @return list with matched results
+     * @return list with result objects
      */
     public List<Product> searchProductByName(String productName) {
         return productRepo.searchByName(productName);
     }
 
     /**
-     * SELECT
+     * SELECT product
      *
-     * @return all objects from the database
+     * @return list with all objects
      */
     public List<Product> getAllProducts() {
         return productRepo.findAll();
     }
 
     /**
-     * INSERT
+     * INSERT product
      *
      * @param productModel with input data
      * @return created object
      */
+    @Transactional
     public Product addProduct(ProductModel productModel) {
         return productRepo.save(new Product(productModel));
     }
 
-    /**
-     * UPDATE
-     *
-     * @param productId    database id
-     * @param modification with input data
-     * @return updated object
-     * @throws ElementNotFoundException if id does not exist
-     */
+    // TODO implement updateProduct with PUT request
     public Product updateProduct(Integer productId, ProductModel modification) throws ElementNotFoundException {
         Product product = this.getProductById(productId);
         return productRepo.save(this.modifyProduct(product, modification));
     }
 
-
     /**
-     * DELETE
+     * DELETE product WHERE productId
      *
      * @param productId database id
      * @return deleted object
@@ -84,13 +86,6 @@ public record ProductDB(ProductRepo productRepo) {
 
     // === UTILITY =====================================================================================================
 
-    /**
-     * Updates the product with all NON-NULL fields of the modification.
-     *
-     * @param product      product to update
-     * @param modification modification with new values
-     * @return updated product
-     */
     private Product modifyProduct(Product product, ProductModel modification) {
         if (modification.getName() != null) {
             product.setName(modification.getName());

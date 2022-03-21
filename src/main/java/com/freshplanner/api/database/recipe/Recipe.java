@@ -1,5 +1,6 @@
 package com.freshplanner.api.database.recipe;
 
+import com.freshplanner.api.model.recipe.RecipeModel;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,22 +20,27 @@ public class Recipe {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "recipe", orphanRemoval = true)
     private final Set<RecipeItem> recipeItems = new HashSet<>();
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     @Setter(AccessLevel.NONE)
     private Integer id;
+
     @Column(name = "name", nullable = false, unique = true)
     private String name;
+
     @Column(name = "category")
     private String category;
+
     @Column(name = "description")
     private String description;
 
-    public Recipe(String name, String category, String description) {
-        this.name = name;
-        this.description = description;
-        this.category = category;
+    public Recipe(RecipeModel recipe) {
+        // id gets generated
+        this.name = recipe.getName();
+        this.description = recipe.getDescription();
+        this.category = recipe.getCategory();
     }
 
     // === OBJECT DEFAULT METHODS ======================================================================================

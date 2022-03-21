@@ -63,6 +63,23 @@ public class Product implements Serializable {
 
     // === OBJECT DEFAULT METHODS ======================================================================================
 
+
+    public Float getKcal() {
+        return kcal != null ? kcal : 0;
+    }
+
+    public Float getCarbohydrates() {
+        return carbohydrates != null ? carbohydrates : 0;
+    }
+
+    public Float getProtein() {
+        return protein != null ? protein : 0;
+    }
+
+    public Float getFat() {
+        return fat != null ? fat : 0;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

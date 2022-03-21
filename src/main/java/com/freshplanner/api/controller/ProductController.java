@@ -53,7 +53,8 @@ public class ProductController {
     public ResponseEntity<ProductModel> getProductById(@ApiParam(value = "product db id", example = "1")
                                                        @PathVariable Integer productId) throws ElementNotFoundException {
 
-        return ResponseEntity.ok(new ProductModel(productDB.getProductById(productId)));
+        return ResponseEntity.ok(new ProductModel(
+                productDB.getProductById(productId)));
     }
 
     @ApiOperation("Search products by contained name.")
@@ -61,8 +62,9 @@ public class ProductController {
     public ResponseEntity<List<ProductModel>> searchProducts(@ApiParam(value = "product name", example = "Apple")
                                                              @RequestParam(value = "name") String productName) {
 
-        return ResponseEntity.ok(productDB.searchProductByName(productName)
-                .stream().map(ProductModel::new).collect(Collectors.toList()));
+        return ResponseEntity.ok(
+                productDB.searchProductByName(productName)
+                        .stream().map(ProductModel::new).collect(Collectors.toList()));
     }
 
     // === DELETE ======================================================================================================
@@ -70,9 +72,10 @@ public class ProductController {
     @PreAuthorize("hasRole('EDITOR') or hasRole('ADMIN')")
     @ApiOperation("Delete product from the database by its generated ID.")
     @DeleteMapping(path = "/delete/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProductModel> deleteProduct(@ApiParam(value = "product db id", example = "1")
-                                                      @PathVariable Integer productId) throws ElementNotFoundException {
+    public ResponseEntity<ProductModel> deleteProductById(@ApiParam(value = "product db id", example = "1")
+                                                          @PathVariable Integer productId) throws ElementNotFoundException {
 
-        return ResponseEntity.ok(new ProductModel(productDB.deleteProductById(productId)));
+        return ResponseEntity.ok(new ProductModel(
+                productDB.deleteProductById(productId)));
     }
 }

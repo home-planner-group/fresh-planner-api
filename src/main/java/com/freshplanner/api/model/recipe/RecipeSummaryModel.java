@@ -1,5 +1,6 @@
 package com.freshplanner.api.model.recipe;
 
+import com.freshplanner.api.database.recipe.Recipe;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -24,6 +25,10 @@ public class RecipeSummaryModel {
     @ApiModelProperty(value = "Duration of the recipe", example = "15")
     private Integer duration;
 
-    @ApiModelProperty(value = "kCal per 100g", example = "400")
-    private Float kcal;
+    public RecipeSummaryModel(Recipe recipe) {
+        this.id = recipe.getId();
+        this.name = recipe.getName();
+        this.category = recipe.getCategory();
+        this.duration = 404; // TODO implement recipe duration
+    }
 }
