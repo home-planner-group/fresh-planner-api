@@ -1,6 +1,7 @@
 package com.freshplanner.api.database.product;
 
 import com.freshplanner.api.database.enums.Unit;
+import com.freshplanner.api.model.product.ProductModel;
 import lombok.*;
 
 import javax.persistence.*;
@@ -45,6 +46,20 @@ public class Product implements Serializable {
 
     @Column(name = "fat")
     private Float fat;
+
+    // === OBJECT DEFAULT METHODS ======================================================================================
+
+    public Product(ProductModel product) {
+        // id gets generated
+        this.name = product.getName();
+        this.category = product.getCategory();
+        this.unit = product.getUnit();
+        this.packageSize = product.getPackageSize();
+        this.kcal = product.getKcal();
+        this.carbohydrates = product.getCarbohydrates();
+        this.protein = product.getProtein();
+        this.fat = product.getFat();
+    }
 
     // === OBJECT DEFAULT METHODS ======================================================================================
 

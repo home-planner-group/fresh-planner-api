@@ -3,7 +3,7 @@ package com.freshplanner.api.controller;
 import com.freshplanner.api.database.product.ProductDB;
 import com.freshplanner.api.exception.ElementNotFoundException;
 import com.freshplanner.api.model.product.ProductModel;
-import com.freshplanner.api.model.product.ProductModification;
+import com.freshplanner.api.model.product.ProductSummaryModel;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,56 +27,42 @@ public class ProductController {
         this.productDB = productDB;
     }
 
+    // === POST ========================================================================================================
+
+    @ApiOperation("Insert a new product into the database.")
+    @PostMapping(path = "/insert", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ProductModel> addProduct(@RequestBody ProductModel productModel) {
+
+        return ResponseEntity.ok(new ProductModel(
+                productDB.addProduct(productModel)));
+    }
+
     // === GET =========================================================================================================
 
     @ApiOperation("Get all products from the database.")
     @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ProductModel>> getAllProducts() {
+    public ResponseEntity<List<ProductSummaryModel>> getAllProducts() {
 
-        return ResponseEntity.ok(productDB.getAllProducts()
-                .stream().map(ProductModel::new).collect(Collectors.toList()));
+        return ResponseEntity.ok(
+                productDB.getAllProducts()
+                        .stream().map(ProductSummaryModel::new).collect(Collectors.toList()));
     }
 
     @ApiOperation("Get product by its given name.")
-    @GetMapping(path = "/get", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProductModel> getProductByName(
-            @ApiParam(value = "product name", example = "Apple") @RequestParam(value = "name") String productName)
-            throws ElementNotFoundException {
+    @GetMapping(path = "/get/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ProductModel> getProductById(@ApiParam(value = "product db id", example = "1")
+                                                       @PathVariable Integer productId) throws ElementNotFoundException {
 
-        return ResponseEntity.ok(new ProductModel(productDB.getProductByName(productName)));
+        return ResponseEntity.ok(new ProductModel(productDB.getProductById(productId)));
     }
 
     @ApiOperation("Search products by contained name.")
     @GetMapping(path = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ProductModel>> searchProducts(
-            @ApiParam(value = "product name", example = "Apple") @RequestParam(value = "name") String productName) {
+    public ResponseEntity<List<ProductModel>> searchProducts(@ApiParam(value = "product name", example = "Apple")
+                                                             @RequestParam(value = "name") String productName) {
 
         return ResponseEntity.ok(productDB.searchProductByName(productName)
                 .stream().map(ProductModel::new).collect(Collectors.toList()));
-    }
-
-    // === POST ========================================================================================================
-
-    @PreAuthorize("hasRole('EDITOR') or hasRole('ADMIN')")
-    @ApiOperation("Insert a new product into the database.")
-    @PostMapping(path = "/insert", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProductModel> addProduct(
-            @RequestBody ProductModification product) {
-
-        return ResponseEntity.ok(new ProductModel(productDB.addProduct(product)));
-    }
-
-    // === PUT =========================================================================================================
-
-    @PreAuthorize("hasRole('EDITOR') or hasRole('ADMIN')")
-    @ApiOperation("Update an existing product by its generated ID.")
-    @PutMapping(path = "/update/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProductModel> updateProduct(
-            @ApiParam(value = "product db id", example = "1") @PathVariable Integer productId,
-            @RequestBody ProductModification product)
-            throws ElementNotFoundException {
-
-        return ResponseEntity.ok(new ProductModel(productDB.updateProduct(productId, product)));
     }
 
     // === DELETE ======================================================================================================
@@ -84,9 +70,8 @@ public class ProductController {
     @PreAuthorize("hasRole('EDITOR') or hasRole('ADMIN')")
     @ApiOperation("Delete product from the database by its generated ID.")
     @DeleteMapping(path = "/delete/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProductModel> deleteProduct(
-            @ApiParam(value = "product db id", example = "1") @PathVariable Integer productId)
-            throws ElementNotFoundException {
+    public ResponseEntity<ProductModel> deleteProduct(@ApiParam(value = "product db id", example = "1")
+                                                      @PathVariable Integer productId) throws ElementNotFoundException {
 
         return ResponseEntity.ok(new ProductModel(productDB.deleteProductById(productId)));
     }

@@ -1,7 +1,7 @@
 package com.freshplanner.api.database.product;
 
 import com.freshplanner.api.exception.ElementNotFoundException;
-import com.freshplanner.api.model.product.ProductModification;
+import com.freshplanner.api.model.product.ProductModel;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -9,22 +9,6 @@ import java.util.Optional;
 
 @Component
 public record ProductDB(ProductRepo productRepo) {
-
-    /**
-     * SELECT
-     *
-     * @param productName product name
-     * @return result object
-     * @throws ElementNotFoundException if id does not exist
-     */
-    public Product getProductByName(String productName) throws ElementNotFoundException {
-        Optional<Product> product = productRepo.findByName(productName);
-        if (product.isPresent()) {
-            return product.get();
-        } else {
-            throw new ElementNotFoundException(Product.class, productName);
-        }
-    }
 
     /**
      * SELECT
@@ -64,13 +48,12 @@ public record ProductDB(ProductRepo productRepo) {
     /**
      * INSERT
      *
-     * @param modification with input data
+     * @param productModel with input data
      * @return created object
      */
-    public Product addProduct(ProductModification modification) {
-        return productRepo.save(this.modifyProduct(new Product(), modification));
+    public Product addProduct(ProductModel productModel) {
+        return productRepo.save(new Product(productModel));
     }
-
 
     /**
      * UPDATE
@@ -80,7 +63,7 @@ public record ProductDB(ProductRepo productRepo) {
      * @return updated object
      * @throws ElementNotFoundException if id does not exist
      */
-    public Product updateProduct(Integer productId, ProductModification modification) throws ElementNotFoundException {
+    public Product updateProduct(Integer productId, ProductModel modification) throws ElementNotFoundException {
         Product product = this.getProductById(productId);
         return productRepo.save(this.modifyProduct(product, modification));
     }
@@ -108,7 +91,7 @@ public record ProductDB(ProductRepo productRepo) {
      * @param modification modification with new values
      * @return updated product
      */
-    private Product modifyProduct(Product product, ProductModification modification) {
+    private Product modifyProduct(Product product, ProductModel modification) {
         if (modification.getName() != null) {
             product.setName(modification.getName());
         }
