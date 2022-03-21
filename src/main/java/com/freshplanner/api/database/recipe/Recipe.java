@@ -33,6 +33,9 @@ public class Recipe {
     @Column(name = "category")
     private String category;
 
+    @Column(name = "duration")
+    private Integer duration;
+
     @Column(name = "description")
     private String description;
 
@@ -41,6 +44,7 @@ public class Recipe {
         this.name = recipe.getName();
         this.description = recipe.getDescription();
         this.category = recipe.getCategory();
+        this.duration = recipe.getDuration();
     }
 
     // === OBJECT DEFAULT METHODS ======================================================================================

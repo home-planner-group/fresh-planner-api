@@ -29,6 +29,6 @@ public class RecipeSummaryModel {
         this.id = recipe.getId();
         this.name = recipe.getName();
         this.category = recipe.getCategory();
-        this.duration = 404; // TODO implement recipe duration
+        this.duration = recipe.getDuration();
     }
 }

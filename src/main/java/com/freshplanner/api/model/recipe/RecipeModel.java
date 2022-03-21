@@ -52,7 +52,7 @@ public class RecipeModel {
         this.id = recipe.getId();
         this.name = recipe.getName();
         this.category = recipe.getCategory();
-        this.duration = 404; // TODO implement recipe duration
+        this.duration = recipe.getDuration();
         this.description = recipe.getDescription();
         this.items = recipe.getRecipeItems().stream().map(Item::new).collect(Collectors.toList());
         if (recipe.getRecipeItems().size() > 0) {
