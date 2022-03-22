@@ -72,12 +72,12 @@ public class RecipeController {
     @PreAuthorize("hasRole('EDITOR') or hasRole('ADMIN')")
     @ApiOperation("Delete a recipe item via associated IDs.")
     @DeleteMapping(path = "/delete-item/{recipeId}/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RecipeModel.Item> deleteRecipeItemById(@ApiParam(value = "recipe db id", example = "1")
-                                                                 @PathVariable Integer recipeId,
-                                                                 @ApiParam(value = "product db id", example = "1")
-                                                                 @PathVariable Integer productId) throws ElementNotFoundException {
+    public ResponseEntity<RecipeModel> deleteRecipeItemById(@ApiParam(value = "recipe db id", example = "1")
+                                                            @PathVariable Integer recipeId,
+                                                            @ApiParam(value = "product db id", example = "1")
+                                                            @PathVariable Integer productId) throws ElementNotFoundException {
 
-        return ResponseEntity.ok(new RecipeModel.Item(
+        return ResponseEntity.ok(new RecipeModel(
                 recipeDB.deleteRecipeItemById(recipeId, productId)));
     }
 

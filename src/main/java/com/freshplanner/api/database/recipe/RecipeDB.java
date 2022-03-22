@@ -118,13 +118,15 @@ public class RecipeDB {
      *
      * @param recipeId  linked database id
      * @param productId linked database id
-     * @return deleted object
+     * @return updated object
      * @throws ElementNotFoundException if linked id does not exist
      */
-    public RecipeItem deleteRecipeItemById(Integer recipeId, Integer productId) throws ElementNotFoundException {
+    public Recipe deleteRecipeItemById(Integer recipeId, Integer productId) throws ElementNotFoundException {
         RecipeItem item = this.getRecipeItemById(recipeId, productId);
         recipeItemRepo.delete(item);
-        return item;
+        Recipe recipe = getRecipeById(recipeId);
+        recipe.getRecipeItems().remove(item);
+        return recipe;
     }
 
     /**
