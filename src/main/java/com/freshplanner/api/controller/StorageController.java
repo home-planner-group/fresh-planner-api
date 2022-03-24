@@ -81,7 +81,7 @@ public class StorageController {
 
     @PreAuthorize("hasRole('USER') or hasRole('EDITOR') or hasRole('ADMIN')")
     @ApiOperation("Delete a storage item via associated IDs. User validation for storage ownership.")
-    @DeleteMapping(path = "/delete/item/{storageId}/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(path = "/delete-item/{storageId}/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<StorageModel> deleteStorageItem(@ApiParam(value = "storage db id", example = "1")
                                                           @PathVariable Integer storageId,
                                                           @ApiParam(value = "product db id", example = "1")
