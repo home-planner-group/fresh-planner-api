@@ -2,27 +2,44 @@ package com.freshplanner.api.database.storage;
 
 import com.freshplanner.api.database.product.ProductDB;
 import com.freshplanner.api.database.user.User;
+import com.freshplanner.api.database.user.UserDB;
 import com.freshplanner.api.exception.ElementNotFoundException;
+import com.freshplanner.api.exception.NoAccessException;
 import com.freshplanner.api.model.storage.StorageModel;
-import org.springframework.security.access.AccessDeniedException;
+import com.freshplanner.api.model.storage.StorageSummaryModel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
 @Component
-public record StorageDB(StorageRepo storageRepo,
-                        StorageItemRepo storageItemRepo,
-                        ProductDB productSelector) {
+public class StorageDB {
 
-    /**
-     * SELECT
-     *
-     * @param storageId database id
-     * @return result object
-     * @throws ElementNotFoundException if id does not exist
-     */
-    public Storage getStorageById(Integer storageId) throws ElementNotFoundException {
+    private final StorageRepo storageRepo;
+    private final StorageItemRepo storageItemRepo;
+    private final ProductDB productSelector;
+    private final UserDB userDB;
+
+    @Autowired
+    public StorageDB(StorageRepo storageRepo, StorageItemRepo storageItemRepo, ProductDB productSelector, UserDB userDB) {
+        this.storageRepo = storageRepo;
+        this.storageItemRepo = storageItemRepo;
+        this.productSelector = productSelector;
+        this.userDB = userDB;
+    }
+
+    public Storage getStorageById(String username, Integer storageId) throws ElementNotFoundException, NoAccessException {
+        Storage storage = getStorageById(storageId);
+        if (storage.containsUser(username)) {
+            return storage;
+        } else {
+            throw new NoAccessException(username, Storage.class, storageId.toString());
+        }
+    }
+
+    private Storage getStorageById(Integer storageId) throws ElementNotFoundException {
         Optional<Storage> storage = storageRepo.findById(storageId);
         if (storage.isPresent()) {
             return storage.get();
@@ -31,38 +48,10 @@ public record StorageDB(StorageRepo storageRepo,
         }
     }
 
-    /**
-     * SELECT
-     *
-     * @param username for identification
-     * @return result of associated storages
-     */
     public List<Storage> getUserStorages(String username) {
         return storageRepo.findStorageByUsername(username);
     }
 
-    /**
-     * SELECT
-     *
-     * @param storageId for identification
-     * @param username  to validate
-     * @throws AccessDeniedException if authentication is not associated
-     */
-    public void validateUserForStorage(Integer storageId, String username) throws AccessDeniedException {
-        Optional<Integer> resultId = storageRepo.findStorageByIdAndUser(storageId, username);
-        if (resultId.isEmpty() || !resultId.get().equals(storageId)) {
-            throw new AccessDeniedException(username + " has no access for storage " + resultId);
-        }
-    }
-
-    /**
-     * SELECT
-     *
-     * @param storageId associated storage id
-     * @param productId associated product id
-     * @return result object
-     * @throws ElementNotFoundException if composite id does not exist
-     */
     private StorageItem getStorageItemById(Integer storageId, Integer productId) throws ElementNotFoundException {
         StorageItem.Key id = new StorageItem.Key(storageId, productId);
         Optional<StorageItem> item = storageItemRepo.findById(id);
@@ -73,65 +62,39 @@ public record StorageDB(StorageRepo storageRepo,
         }
     }
 
-    /**
-     * INSERT
-     *
-     * @param user associated authentication
-     * @return created object
-     */
-    public Storage addStorage(User user) {
-        return storageRepo.save(new Storage(user));
+    @Transactional
+    public Storage addStorage(String username, StorageSummaryModel storageModel) throws ElementNotFoundException {
+        User user = userDB.getUserByName(username);
+        return storageRepo.save(new Storage(user, storageModel));
     }
 
-    /**
-     * INSERT
-     *
-     * @param modification with input data
-     * @return created object
-     * @throws ElementNotFoundException if associated id does not exist
-     */
-    public StorageItem addStorageItem(int storageId, StorageModel.Item modification) throws ElementNotFoundException {
-        StorageItem item = new StorageItem(this.getStorageById(storageId),
-                productSelector.getProductById(modification.getProductId()),
-                modification.getCount());
-        return storageItemRepo.save(item);
+    @Transactional
+    public Storage addStorageItem(String username, int storageId, StorageModel.Item storageItemModel) throws ElementNotFoundException, NoAccessException {
+        Storage storage = getStorageById(username, storageId);
+        StorageItem item = storageItemRepo.save(new StorageItem(
+                storage,
+                productSelector.getProductById(storageItemModel.getProductId()),
+                storageItemModel.getCount()));
+        storage.getStorageItems().add(item);
+        return storage;
     }
 
-    /**
-     * UPDATE
-     *
-     * @param modification with input data
-     * @return updated object
-     * @throws ElementNotFoundException if associated id does not exist
-     */
+    // TODO implement updateStorageItem with PUT request
     public StorageItem updateStorageItem(int storageId, StorageModel.Item modification) throws ElementNotFoundException {
         StorageItem item = this.getStorageItemById(storageId, modification.getProductId());
         return storageItemRepo.save(item.setCount(modification.getCount()));
     }
 
-    /**
-     * DELETE
-     *
-     * @param storageId associated storage id
-     * @param productId associated product id
-     * @return deleted object
-     * @throws ElementNotFoundException if associated id does not exist
-     */
-    public StorageItem deleteStorageItem(Integer storageId, Integer productId) throws ElementNotFoundException {
+    public Storage deleteStorageItem(String username, Integer storageId, Integer productId) throws ElementNotFoundException, NoAccessException {
+        Storage storage = this.getStorageById(username, storageId);
         StorageItem item = this.getStorageItemById(storageId, productId);
         storageItemRepo.delete(item);
-        return item;
+        storage.getStorageItems().remove(item);
+        return storage;
     }
 
-    /**
-     * DELETE
-     *
-     * @param storageId database id
-     * @return deleted object
-     * @throws ElementNotFoundException if id does not exist
-     */
-    public Storage deleteStorageById(Integer storageId) throws ElementNotFoundException {
-        Storage storage = this.getStorageById(storageId);
+    public Storage deleteStorageById(String username, Integer storageId) throws ElementNotFoundException, NoAccessException {
+        Storage storage = this.getStorageById(username, storageId);
         storageRepo.delete(storage);
         return storage;
     }

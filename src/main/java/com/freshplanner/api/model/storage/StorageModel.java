@@ -31,7 +31,7 @@ public class StorageModel {
 
     public StorageModel(Storage storage) {
         this.id = storage.getId();
-        this.name = "Work in progress!"; //TODO add name to storage
+        this.name = storage.getName();
         this.users = storage.getUsers().stream().map(User::getName).collect(Collectors.toList());
         this.items = storage.getStorageItems().stream().map(Item::new).collect(Collectors.toList());
     }
