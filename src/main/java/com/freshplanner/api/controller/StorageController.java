@@ -77,6 +77,34 @@ public class StorageController {
                 storageDB.getStorageById(username, storageId)));
     }
 
+    // === PUT =========================================================================================================
+
+    @PreAuthorize("hasRole('USER') or hasRole('EDITOR') or hasRole('ADMIN')")
+    @ApiOperation("Get storage by its generated ID.")
+    @PutMapping(path = "/add-user/{storageId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<StorageModel> addUser(@ApiParam(value = "storage db id", example = "1")
+                                                @PathVariable Integer storageId,
+                                                @ApiParam(value = "username", example = "Max")
+                                                @RequestParam String username) throws ElementNotFoundException, NoAccessException {
+        String usernameOwner = SecurityContext.extractUsername();
+
+        return ResponseEntity.ok(new StorageModel(
+                storageDB.updateAddUser(usernameOwner, storageId, username)));
+    }
+
+    @PreAuthorize("hasRole('USER') or hasRole('EDITOR') or hasRole('ADMIN')")
+    @ApiOperation("Get storage by its generated ID.")
+    @PutMapping(path = "/remove-user/{storageId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<StorageModel> removeUser(@ApiParam(value = "storage db id", example = "1")
+                                                   @PathVariable Integer storageId,
+                                                   @ApiParam(value = "username", example = "Max")
+                                                   @RequestParam String username) throws ElementNotFoundException, NoAccessException {
+        String usernameOwner = SecurityContext.extractUsername();
+
+        return ResponseEntity.ok(new StorageModel(
+                storageDB.updateRemoveUser(usernameOwner, storageId, username)));
+    }
+
     // === DELETE ======================================================================================================
 
     @PreAuthorize("hasRole('USER') or hasRole('EDITOR') or hasRole('ADMIN')")

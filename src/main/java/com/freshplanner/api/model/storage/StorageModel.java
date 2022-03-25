@@ -48,6 +48,12 @@ public class StorageModel {
         @ApiModelProperty(value = "Name of the product", example = "Apple")
         private String productName;
 
+        @ApiModelProperty(value = "Name of the product", example = "Apple")
+        private String category;
+
+        @ApiModelProperty(value = "Name of the product", example = "Apple")
+        private Float packageSize;
+
         @ApiModelProperty(value = "Product count in the storage", example = "1")
         private Float count;
 
@@ -57,6 +63,8 @@ public class StorageModel {
         public Item(StorageItem item) {
             this.productId = item.getProduct().getId();
             this.productName = item.getProduct().getName();
+            this.category = item.getProduct().getCategory();
+            this.packageSize = item.getProduct().getPackageSize();
             this.count = item.getCount();
             this.unit = item.getProduct().getUnit();
         }

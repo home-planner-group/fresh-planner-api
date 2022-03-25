@@ -90,6 +90,12 @@ public class AuthenticationController {
                 .stream().map(Role::getName).collect(Collectors.toList()));
     }
 
+    @ApiOperation("Get all possible values of: Auth Database - Roles")
+    @GetMapping(path = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<String>> getUsers() {
+        return ResponseEntity.ok(userDB.getAllUsernames());
+    }
+
     // === DELETE ======================================================================================================
 
     @PreAuthorize("hasRole('USER')")

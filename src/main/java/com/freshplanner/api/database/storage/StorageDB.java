@@ -79,6 +79,20 @@ public class StorageDB {
         return storage;
     }
 
+    @Transactional
+    public Storage updateAddUser(String usernameOwner, int storageId, String usernameMember) throws ElementNotFoundException, NoAccessException {
+        Storage storage = getStorageById(usernameOwner, storageId);
+        User user = userDB.getUserByName(usernameMember);
+        return storageRepo.save(storage.addUser(user));
+    }
+
+    @Transactional
+    public Storage updateRemoveUser(String usernameOwner, int storageId, String usernameMember) throws ElementNotFoundException, NoAccessException {
+        Storage storage = getStorageById(usernameOwner, storageId);
+        User user = userDB.getUserByName(usernameMember);
+        return storageRepo.save(storage.removeUser(user));
+    }
+
     // TODO implement updateStorageItem with PUT request
     public StorageItem updateStorageItem(int storageId, StorageModel.Item modification) throws ElementNotFoundException {
         StorageItem item = this.getStorageItemById(storageId, modification.getProductId());

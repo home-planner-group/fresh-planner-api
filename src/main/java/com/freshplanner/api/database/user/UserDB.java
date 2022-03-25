@@ -37,6 +37,10 @@ public record UserDB(RoleRepo roleRepo, UserRepo userRepo, PasswordEncoder encod
         return roleRepo.findAll();
     }
 
+    public List<String> getAllUsernames() {
+        return userRepo.getAllUsernames();
+    }
+
     // === INSERT ======================================================================================================
 
     /**
