@@ -18,6 +18,8 @@ The application start on [http://localhost:8080](http://localhost:8080).
       automatically restarts the application. To make the best use of it, activate following settings:
         * `Settings > Build, Execution, Deployment > Compiler > Build project automatically`
         * `Registry > compiler.automake.allow.when.app.running`
+* Download and Install [Docker](https://docs.docker.com/desktop/windows/install/)
+    * Build: `docker build -t fresh-planner-api .`
 
 ## Dependencies
 

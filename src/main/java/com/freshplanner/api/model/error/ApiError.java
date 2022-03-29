@@ -25,7 +25,7 @@ public class ApiError {
         this.status = status;
         this.requestPath = requestPath;
         this.timestamp = getCurrentTimeStamp();
-        this.reason = exception.getClass().getName();
+        this.reason = exception.getClass().getSimpleName();
         this.message = exception.getMessage();
         this.errors = new ArrayList<>();
         errorObjects.forEach(objectError -> errors.add(objectError.toString()));
@@ -36,7 +36,7 @@ public class ApiError {
         this.status = status;
         this.requestPath = requestPath;
         this.timestamp = getCurrentTimeStamp();
-        this.reason = exception.getClass().getName();
+        this.reason = exception.getClass().getSimpleName();
         this.message = exception.getMessage();
         this.errors = Collections.singletonList("error occurred");
     }

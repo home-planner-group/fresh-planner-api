@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.logging.Level;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -68,12 +67,15 @@ public class GlobalExceptionHandler {
     }
 
     private ResponseEntity<ApiError> buildResponse(ApiError apiError, Exception exception) {
-        ApiLogger.error("Exception: '" + apiError.getReason() + "' with status: '" + apiError.getStatus().toString() + "'");
-        ApiLogger.error("Exception Message: " + apiError.getMessage());
-        if (apiError.getStatus().equals(HttpStatus.INTERNAL_SERVER_ERROR)
-                || ApiLogger.getLevel() == null
-                || ApiLogger.getLevel().intValue() <= Level.INFO.intValue()) {
+        String message = "Exception '" + apiError.getReason()
+                + "' with status '" + apiError.getStatus().toString()
+                + "' on path '" + apiError.getRequestPath() + "': "
+                + apiError.getMessage();
+        if (apiError.getStatus().equals(HttpStatus.INTERNAL_SERVER_ERROR)) {
+            ApiLogger.error(message);
             exception.printStackTrace();
+        } else {
+            ApiLogger.warning(message);
         }
         return ResponseEntity.status(apiError.getStatus()).body(apiError);
     }
