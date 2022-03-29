@@ -25,6 +25,6 @@ public class ApiLogger {
 
     private static String getExecutingMethod() {
         StackTraceElement stacktraceElement = Thread.currentThread().getStackTrace()[3];
-        return " (" + stacktraceElement.getClassName() + "::" + stacktraceElement.getMethodName() + ")";
+        return " (" + stacktraceElement.getFileName() + "::" + stacktraceElement.getMethodName() + ")";
     }
 }
