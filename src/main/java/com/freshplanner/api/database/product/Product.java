@@ -47,8 +47,6 @@ public class Product implements Serializable {
     @Column(name = "fat")
     private Float fat;
 
-    // === OBJECT DEFAULT METHODS ======================================================================================
-
     public Product(ProductModel product) {
         // id gets generated
         this.name = product.getName();
@@ -61,8 +59,25 @@ public class Product implements Serializable {
         this.fat = product.getFat();
     }
 
-    // === OBJECT DEFAULT METHODS ======================================================================================
-
+    public Product update(ProductModel model) {
+        if (model.getName() != null) {
+            this.name = model.getName();
+        }
+        if (model.getCategory() != null) {
+            this.category = model.getCategory();
+        }
+        if (model.getUnit() != null) {
+            this.unit = model.getUnit();
+        }
+        if (model.getPackageSize() != null) {
+            this.packageSize = model.getPackageSize();
+        }
+        this.kcal = model.getKcal();
+        this.carbohydrates = model.getCarbohydrates();
+        this.protein = model.getProtein();
+        this.fat = model.getFat();
+        return this;
+    }
 
     public Float getKcal() {
         return kcal != null ? kcal : 0;

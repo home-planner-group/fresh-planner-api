@@ -73,7 +73,7 @@ public class StorageDB {
         Storage storage = getStorageById(username, storageId);
         StorageItem item = storageItemRepo.save(new StorageItem(
                 storage,
-                productSelector.getProductById(storageItemModel.getProductId()),
+                productSelector.selectProductById(storageItemModel.getProductId()),
                 storageItemModel.getCount()));
         storage.getStorageItems().add(item);
         return storage;

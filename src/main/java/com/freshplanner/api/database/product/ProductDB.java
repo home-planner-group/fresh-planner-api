@@ -19,6 +19,8 @@ public class ProductDB {
         this.productRepo = productRepo;
     }
 
+    // === SELECT ======================================================================================================
+
     /**
      * SELECT product WHERE productId
      *
@@ -26,7 +28,7 @@ public class ProductDB {
      * @return result object
      * @throws ElementNotFoundException if id does not exist
      */
-    public Product getProductById(Integer productId) throws ElementNotFoundException {
+    public Product selectProductById(Integer productId) throws ElementNotFoundException {
         Optional<Product> product = productRepo.findById(productId);
         if (product.isPresent()) {
             return product.get();
@@ -41,7 +43,7 @@ public class ProductDB {
      * @param productName partial product name
      * @return list with result objects
      */
-    public List<Product> searchProductByName(String productName) {
+    public List<Product> selectProductsByName(String productName) {
         return productRepo.searchByName(productName);
     }
 
@@ -50,9 +52,20 @@ public class ProductDB {
      *
      * @return list with all objects
      */
-    public List<Product> getAllProducts() {
+    public List<Product> selectAllProducts() {
         return productRepo.findAll();
     }
+
+    /**
+     * SELECT DISTINCT product-category
+     *
+     * @return list with all objects
+     */
+    public List<String> selectDistinctCategories() {
+        return productRepo.findAllCategories();
+    }
+
+    // === INSERT ======================================================================================================
 
     /**
      * INSERT product
@@ -61,15 +74,27 @@ public class ProductDB {
      * @return created object
      */
     @Transactional
-    public Product addProduct(ProductModel productModel) {
+    public Product insertProduct(ProductModel productModel) {
         return productRepo.save(new Product(productModel));
     }
 
-    // TODO implement updateProduct with PUT request
-    public Product updateProduct(Integer productId, ProductModel modification) throws ElementNotFoundException {
-        Product product = this.getProductById(productId);
-        return productRepo.save(this.modifyProduct(product, modification));
+
+    // === UPDATE ======================================================================================================
+
+    /**
+     * UPDATE product
+     *
+     * @param productModel with input data
+     * @return updated object
+     * @throws ElementNotFoundException if id does not exist
+     */
+    @Transactional
+    public Product updateProduct(ProductModel productModel) throws ElementNotFoundException {
+        Product product = this.selectProductById(productModel.getId());
+        return productRepo.save(product.update(productModel));
     }
+
+    // === DELETE ======================================================================================================
 
     /**
      * DELETE product WHERE productId
@@ -79,38 +104,8 @@ public class ProductDB {
      * @throws ElementNotFoundException if id does not exist
      */
     public Product deleteProductById(Integer productId) throws ElementNotFoundException {
-        Product product = this.getProductById(productId);
+        Product product = this.selectProductById(productId);
         productRepo.delete(product);
-        return product;
-    }
-
-    // === UTILITY =====================================================================================================
-
-    private Product modifyProduct(Product product, ProductModel modification) {
-        if (modification.getName() != null) {
-            product.setName(modification.getName());
-        }
-        if (modification.getCategory() != null) {
-            product.setCategory(modification.getCategory());
-        }
-        if (modification.getUnit() != null) {
-            product.setUnit(modification.getUnit());
-        }
-        if (modification.getPackageSize() != null) {
-            product.setPackageSize(modification.getPackageSize());
-        }
-        if (modification.getKcal() != null) {
-            product.setKcal(modification.getKcal());
-        }
-        if (modification.getCarbohydrates() != null) {
-            product.setCarbohydrates(modification.getCarbohydrates());
-        }
-        if (modification.getProtein() != null) {
-            product.setProtein(modification.getProtein());
-        }
-        if (modification.getFat() != null) {
-            product.setFat(modification.getFat());
-        }
         return product;
     }
 }

@@ -1,7 +1,6 @@
 package com.freshplanner.api.controller;
 
 import com.freshplanner.api.database.enums.RoleName;
-import com.freshplanner.api.database.user.Role;
 import com.freshplanner.api.database.user.User;
 import com.freshplanner.api.database.user.UserDB;
 import com.freshplanner.api.exception.ElementNotFoundException;
@@ -25,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -86,8 +84,7 @@ public class AuthenticationController {
     @ApiOperation("Get all possible values of: Auth Database - Roles")
     @GetMapping(path = "/roles", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<RoleName>> getAuthRoles() {
-        return ResponseEntity.ok(userDB.getAllRoles()
-                .stream().map(Role::getName).collect(Collectors.toList()));
+        return ResponseEntity.ok(RoleName.getAll());
     }
 
     @ApiOperation("Get all possible values of: Auth Database - Roles")

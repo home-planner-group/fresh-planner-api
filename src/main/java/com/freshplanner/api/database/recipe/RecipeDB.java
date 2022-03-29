@@ -92,7 +92,7 @@ public class RecipeDB {
     private RecipeItem addRecipeItem(Recipe recipe, RecipeModel.Item recipeItemModel) throws ElementNotFoundException {
         return recipeItemRepo.save(new RecipeItem(
                 recipe,
-                productSelector.getProductById(recipeItemModel.getProductId()),
+                productSelector.selectProductById(recipeItemModel.getProductId()),
                 recipeItemModel.getCount(),
                 recipeItemModel.getDescription()));
     }
