@@ -59,12 +59,22 @@ public class ProductController {
     }
 
     @ApiOperation("Search products by contained name.")
-    @GetMapping(path = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ProductModel>> searchProducts(@ApiParam(value = "product name", example = "Apple")
-                                                             @RequestParam(value = "name") String productName) {
+    @GetMapping(path = "/search-name", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<ProductModel>> searchProductsByName(@ApiParam(value = "product name", example = "Apple")
+                                                                   @RequestParam(value = "name") String productName) {
 
         return ResponseEntity.ok(
                 productDB.selectProductsByName(productName)
+                        .stream().map(ProductModel::new).collect(Collectors.toList()));
+    }
+
+    @ApiOperation("Search products by contained category.")
+    @GetMapping(path = "/search-category", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<ProductModel>> searchProductsByCategory(@ApiParam(value = "product category", example = "Apple")
+                                                                       @RequestParam(value = "category") String productCategory) {
+
+        return ResponseEntity.ok(
+                productDB.selectProductsByCategory(productCategory)
                         .stream().map(ProductModel::new).collect(Collectors.toList()));
     }
 
@@ -85,7 +95,7 @@ public class ProductController {
     // === PUT =========================================================================================================
 
     @ApiOperation("Update product in the database.")
-    @PostMapping(path = "/update", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/update", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProductModel> updateProduct(@RequestBody ProductModel productModel) throws ElementNotFoundException {
 
         return ResponseEntity.ok(new ProductModel(

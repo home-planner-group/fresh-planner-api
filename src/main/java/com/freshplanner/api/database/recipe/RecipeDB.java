@@ -18,11 +18,13 @@ public class RecipeDB {
     private final ProductDB productSelector;
 
     @Autowired
-    public RecipeDB(RecipeRepo recipeRepo, RecipeItemRepo recipeItemRepo, ProductDB productSelector) {
+    public RecipeDB(RecipeRepo recipeRepo, RecipeItemRepo recipeItemRepo, ProductDB productDB) {
         this.recipeRepo = recipeRepo;
         this.recipeItemRepo = recipeItemRepo;
-        this.productSelector = productSelector;
+        this.productSelector = productDB;
     }
+
+    // === SELECT ======================================================================================================
 
     /**
      * SELECT recipe WHERE recipeId
@@ -31,7 +33,7 @@ public class RecipeDB {
      * @return result object
      * @throws ElementNotFoundException if id does not exist
      */
-    public Recipe getRecipeById(Integer recipeId) throws ElementNotFoundException {
+    public Recipe selectRecipeById(Integer recipeId) throws ElementNotFoundException {
         Optional<Recipe> recipe = recipeRepo.findById(recipeId);
         if (recipe.isPresent()) {
             return recipe.get();
@@ -40,7 +42,7 @@ public class RecipeDB {
         }
     }
 
-    private RecipeItem getRecipeItemById(Integer recipeId, Integer productId) throws ElementNotFoundException {
+    private RecipeItem selectRecipeItemById(Integer recipeId, Integer productId) throws ElementNotFoundException {
         RecipeItem.Key id = new RecipeItem.Key(recipeId, productId);
         Optional<RecipeItem> item = recipeItemRepo.findById(id);
         if (item.isPresent()) {
@@ -51,26 +53,57 @@ public class RecipeDB {
     }
 
     /**
+     * SELECT recipe WHERE LIKE recipeName
+     *
+     * @param recipeName partial name
+     * @return list with result objects
+     */
+    public List<Recipe> selectRecipesByName(String recipeName) {
+        return recipeRepo.searchByName(recipeName);
+    }
+
+    /**
+     * SELECT recipe WHERE LIKE recipeCategory
+     *
+     * @param recipeCategory partial name
+     * @return list with result objects
+     */
+    public List<Recipe> selectRecipesByCategory(String recipeCategory) {
+        return recipeRepo.searchByCategory(recipeCategory);
+    }
+
+    /**
      * SELECT recipe
      *
      * @return list with all objects
      */
-    public List<Recipe> getAllRecipes() {
+    public List<Recipe> selectAllRecipes() {
         return recipeRepo.findAll();
     }
+
+    /**
+     * SELECT DISTINCT recipe-category
+     *
+     * @return list with all objects
+     */
+    public List<String> selectDistinctCategories() {
+        return recipeRepo.findAllCategories();
+    }
+
+    // === INSERT ======================================================================================================
 
     /**
      * INSERT recipe
      *
      * @param recipeModel with input data
-     * @return result object
+     * @return created object
      * @throws ElementNotFoundException if id does not exist
      */
     @Transactional
-    public Recipe addRecipe(RecipeModel recipeModel) throws ElementNotFoundException {
+    public Recipe insertRecipe(RecipeModel recipeModel) throws ElementNotFoundException {
         Recipe recipe = recipeRepo.save(new Recipe(recipeModel));
         for (RecipeModel.Item item : recipeModel.getItems()) {
-            recipe.getRecipeItems().add(addRecipeItem(recipe, item));
+            recipe.getRecipeItems().add(insertRecipeItem(recipe, item));
         }
         return recipe;
     }
@@ -80,16 +113,17 @@ public class RecipeDB {
      *
      * @param recipeId        linked database id
      * @param recipeItemModel with input data
-     * @throws ElementNotFoundException if linked id does not exist
+     * @return updated object
+     * @throws ElementNotFoundException if id does not exist
      */
     @Transactional
-    public Recipe addRecipeItem(int recipeId, RecipeModel.Item recipeItemModel) throws ElementNotFoundException {
-        Recipe recipe = getRecipeById(recipeId);
-        recipe.getRecipeItems().add(addRecipeItem(recipe, recipeItemModel));
+    public Recipe insertRecipeItem(int recipeId, RecipeModel.Item recipeItemModel) throws ElementNotFoundException {
+        Recipe recipe = selectRecipeById(recipeId);
+        recipe.getRecipeItems().add(insertRecipeItem(recipe, recipeItemModel));
         return recipe;
     }
 
-    private RecipeItem addRecipeItem(Recipe recipe, RecipeModel.Item recipeItemModel) throws ElementNotFoundException {
+    private RecipeItem insertRecipeItem(Recipe recipe, RecipeModel.Item recipeItemModel) throws ElementNotFoundException {
         return recipeItemRepo.save(new RecipeItem(
                 recipe,
                 productSelector.selectProductById(recipeItemModel.getProductId()),
@@ -97,21 +131,36 @@ public class RecipeDB {
                 recipeItemModel.getDescription()));
     }
 
-    // TODO implement updateRecipe with PUT request
-    public Recipe updateRecipe(RecipeModel modification) throws ElementNotFoundException {
-        return recipeRepo.save(
-                this.modifyRecipe(
-                        this.getRecipeById(modification.getId()),
-                        modification));
+    // === UPDATE ======================================================================================================
+
+    /**
+     * UPDATE recipe
+     *
+     * @param recipeModel with input data
+     * @return updated object
+     * @throws ElementNotFoundException if id does not exist
+     */
+    @Transactional
+    public Recipe updateRecipe(RecipeModel recipeModel) throws ElementNotFoundException {
+        Recipe recipe = this.selectRecipeById(recipeModel.getId());
+        return recipeRepo.save(recipe.update(recipeModel));
     }
 
-    // TODO implement updateRecipeItem with PUT request
-    public RecipeItem updateRecipeItem(int recipeId, RecipeModel.Item modification) throws ElementNotFoundException {
-        return recipeItemRepo.save(
-                this.getRecipeItemById(recipeId, modification.getProductId())
-                        .setCount(modification.getCount())
-                        .setDescription(modification.getDescription()));
+    /**
+     * UPDATE recipeItem
+     *
+     * @param recipeId  linked database id
+     * @param itemModel with input data
+     * @return updated object
+     * @throws ElementNotFoundException if id does not exist
+     */
+    @Transactional
+    public RecipeItem updateRecipeItem(int recipeId, RecipeModel.Item itemModel) throws ElementNotFoundException {
+        RecipeItem recipeItem = this.selectRecipeItemById(recipeId, itemModel.getProductId());
+        return recipeItemRepo.save(recipeItem.update(itemModel));
     }
+
+    // === DELETE ======================================================================================================
 
     /**
      * DELETE recipeItem WHERE recipeId AND productId
@@ -119,12 +168,12 @@ public class RecipeDB {
      * @param recipeId  linked database id
      * @param productId linked database id
      * @return updated object
-     * @throws ElementNotFoundException if linked id does not exist
+     * @throws ElementNotFoundException if id does not exist
      */
     public Recipe deleteRecipeItemById(Integer recipeId, Integer productId) throws ElementNotFoundException {
-        RecipeItem item = this.getRecipeItemById(recipeId, productId);
+        RecipeItem item = this.selectRecipeItemById(recipeId, productId);
         recipeItemRepo.delete(item);
-        Recipe recipe = getRecipeById(recipeId);
+        Recipe recipe = selectRecipeById(recipeId);
         recipe.getRecipeItems().remove(item);
         return recipe;
     }
@@ -137,27 +186,8 @@ public class RecipeDB {
      * @throws ElementNotFoundException if id does not exist
      */
     public Recipe deleteRecipeById(Integer recipeId) throws ElementNotFoundException {
-        Recipe recipe = this.getRecipeById(recipeId);
+        Recipe recipe = this.selectRecipeById(recipeId);
         recipeRepo.delete(recipe);
-        return recipe;
-    }
-
-    // === UTILITY =====================================================================================================
-
-    private Recipe modifyRecipe(Recipe recipe, RecipeModel modification) {
-        if (modification.getName() != null) {
-            recipe.setName(modification.getName());
-        }
-        if (modification.getCategory() != null) {
-            recipe.setCategory(modification.getCategory());
-        }
-        if (modification.getDescription() != null) {
-            if (modification.getDescription().equals("")) {
-                recipe.setDescription(null);
-            } else {
-                recipe.setDescription(modification.getDescription());
-            }
-        }
         return recipe;
     }
 }

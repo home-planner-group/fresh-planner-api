@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -16,7 +17,7 @@ import java.util.Set;
 @Setter
 @Entity(name = "Recipe")
 @Table(name = "recipes")
-public class Recipe {
+public class Recipe implements Serializable {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "recipe", orphanRemoval = true)
     private final Set<RecipeItem> recipeItems = new HashSet<>();
@@ -33,22 +34,31 @@ public class Recipe {
     @Column(name = "category")
     private String category;
 
-    @Column(name = "duration")
-    private Integer duration;
-
     @Column(name = "description")
     private String description;
+
+    @Column(name = "duration")
+    private Integer duration;
 
     public Recipe(RecipeModel recipe) {
         // id gets generated
         this.name = recipe.getName();
-        this.description = recipe.getDescription();
         this.category = recipe.getCategory();
         this.duration = recipe.getDuration();
+        this.description = recipe.getDescription();
     }
 
-    // === OBJECT DEFAULT METHODS ======================================================================================
-
+    public Recipe update(RecipeModel model) {
+        if (model.getName() != null) {
+            this.name = model.getName();
+        }
+        if (model.getCategory() != null) {
+            this.category = model.getCategory();
+        }
+        this.description = model.getDescription();
+        this.duration = model.getDuration();
+        return this;
+    }
 
     @Override
     public String toString() {
@@ -56,6 +66,7 @@ public class Recipe {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", category='" + category + '\'' +
+                ", duration=" + duration +
                 ", description='" + description + '\'' +
                 '}';
     }

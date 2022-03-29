@@ -1,6 +1,7 @@
 package com.freshplanner.api.database.recipe;
 
 import com.freshplanner.api.database.product.Product;
+import com.freshplanner.api.model.recipe.RecipeModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -16,7 +17,7 @@ import java.util.Objects;
 @Entity(name = "RecipeItem")
 @Table(name = "recipe_items")
 @IdClass(RecipeItem.Key.class)
-public class RecipeItem {
+public class RecipeItem implements Serializable {
 
     @Id
     @ManyToOne
@@ -34,17 +35,15 @@ public class RecipeItem {
     @Column(name = "description")
     private String description;
 
-    public RecipeItem setCount(Float count) {
-        this.count = count;
+    public RecipeItem update(RecipeModel.Item model) {
+        if (model.getCount() != null && model.getCount() >= 0) {
+            this.count = model.getCount();
+        } else {
+            this.count = 0f;
+        }
+        this.description = model.getDescription();
         return this;
     }
-
-    public RecipeItem setDescription(String description) {
-        this.description = description;
-        return this;
-    }
-
-    // === OBJECT DEFAULT METHODS ======================================================================================
 
     @Override
     public String toString() {

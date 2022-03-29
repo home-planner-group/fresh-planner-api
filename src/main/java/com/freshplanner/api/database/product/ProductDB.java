@@ -40,11 +40,21 @@ public class ProductDB {
     /**
      * SELECT product WHERE LIKE productName
      *
-     * @param productName partial product name
+     * @param productName partial name
      * @return list with result objects
      */
     public List<Product> selectProductsByName(String productName) {
         return productRepo.searchByName(productName);
+    }
+
+    /**
+     * SELECT product WHERE LIKE productCategory
+     *
+     * @param productCategory partial name
+     * @return list with result objects
+     */
+    public List<Product> selectProductsByCategory(String productCategory) {
+        return productRepo.searchByCategory(productCategory);
     }
 
     /**
