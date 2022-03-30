@@ -1,4 +1,5 @@
 [![Continuous-Integration](https://github.com/FoodAppGroup/FreshPlanner-API/actions/workflows/ci.yml/badge.svg)](https://github.com/FoodAppGroup/FreshPlanner-API/actions/workflows/ci.yml)
+[![Docker-Image](https://github.com/FoodAppGroup/FreshPlanner-API/actions/workflows/docker-image.yml/badge.svg)](https://github.com/FoodAppGroup/FreshPlanner-API/actions/workflows/docker-image.yml)
 
 # FreshPlanner API
 
@@ -71,9 +72,14 @@ Models -->  Controller   <-- Configuration <-- Main
 
 ### [Continuous Integration](.github/workflows/ci.yml)
 
-* Executes __Build__
-* Run __Tests__ with MySQL DB
+* Executes `mvn install`
+* Run `mvn test` with MySQL DB
 * Perform __CodeQL__ Analysis with Java
+
+### [Docker Image for GitHub](.github/workflows/docker-image.yml)
+
+* Executes `docker build`
+* Execute `docker push` to GitHub Packages
 
 ## [Docker Image](Dockerfile)
 
