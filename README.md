@@ -72,12 +72,14 @@ Models -->  Controller   <-- Configuration <-- Main
 
 ### [Continuous Integration](.github/workflows/ci.yml)
 
+* __Trigger:__ all pushes
 * Executes `mvn install`
 * Run `mvn test` with MySQL DB
 * Perform __CodeQL__ Analysis with Java
 
 ### [Docker Image for GitHub](.github/workflows/docker-image.yml)
 
+* __Trigger:__ manual or on published release
 * Executes `docker build`
 * Execute `docker push` to GitHub Packages
 
