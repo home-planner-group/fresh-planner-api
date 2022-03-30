@@ -18,28 +18,24 @@
     </properties>
 
     <dependencies>
-        <!-- ⋁ Java Persistence API (JPA) with MySQL -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
+        <!-- ⋁ Spring Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <scope>runtime</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
-        <!-- ∧ Java Persistence API (JPA) with MySQL -->
-        <!-- ⋁ Swagger API Documentation -->
+        <!-- ∧ Spring Web -->
+        <!-- ⋁ Lombok for lightweight Class Code -->
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-boot-starter</artifactId>
-            <version>3.0.0</version>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
         </dependency>
-        <!-- ∧ Swagger API Documentation -->
+        <!-- ∧ Lombok for lightweight Class Code -->
         <!-- ⋁ Spring Boot Dev Tools for faster reloads -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -48,13 +44,25 @@
             <optional>true</optional>
         </dependency>
         <!-- ∧ Spring Boot Dev Tools for faster reloads -->
-        <!-- ⋁ Lombok for lightweight Class Code -->
+        <!-- ⋁ Swagger API Documentation -->
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
+            <version>3.0.0</version>
         </dependency>
-        <!-- ∧ Lombok for lightweight Class Code -->
+        <!-- ∧ Swagger API Documentation -->
+        <!-- ⋁ Java Persistence API (JPA) with MySQL -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- ∧ Java Persistence API (JPA) with MySQL -->
         <!-- ⋁ Spring Boot Security with manual JWT -->
         <dependency>
             <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
@@ -76,13 +84,6 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
         <!-- ∧ Spring Boot Request Validation -->
-        <!-- ⋁ Web Testing -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!-- ∧ Web Testing -->
     </dependencies>
 
     <build>
