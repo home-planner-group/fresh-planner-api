@@ -1,9 +1,8 @@
 name: Docker-Image
 
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
+  # enables manual trigger
   release:
     types: [ published ]
 
