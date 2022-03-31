@@ -7,6 +7,19 @@ This project was generated with [Spring Initializer](https://start.spring.io/) v
 
 The application starts on [http://localhost:8080](http://localhost:8080).
 
+### Purpose
+
+This project is a project to get involved with __Spring Boot__ (Java, Maven), __Docker__ and __GitHub__ (Actions,
+Packages, Projects).
+
+### Description
+
+The application is a __Spring Boot REST API__ that provides features to manage data in a MySQL database. The data
+includes several entities that are related to the weekly food shopping and planning the meals. The basic features are
+all about managing the data first and provide the correct connections between the entities. The advances features are
+operations between the entities, for example you plan a recipe for the next week and add it with this operation to your
+shopping cart.
+
 ## Architecture
 
 ### Overview
@@ -90,4 +103,3 @@ Models -->  Controller   <-- Configuration <-- Main
 * Exposes `Port 8080`
 * Uses by default __MySQL DB__ at `Port 3306`
 * Detailed configuration: [prod.properties](src/main/resources/application-prod.properties)
-

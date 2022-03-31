@@ -11,7 +11,7 @@ VALUES ('ROLE_USER'),
 
 INSERT
 IGNORE INTO users(name, email, password)
-    VALUE ('Admin', 'steinke.felix@yahoo.de', '$2a$10$TXUz/.yyH.EAF9XjtLlJeeNjJEyjoCZ.zyNZRMPKQ7GSWHf6QuB8a');
+    VALUE ('Admin', 'example@mal.de', '$2a$10$TXUz/.yyH.EAF9XjtLlJeeNjJEyjoCZ.zyNZRMPKQ7GSWHf6QuB8a');
 
 INSERT
 IGNORE INTO user_roles(user_id, role_id)
