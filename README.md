@@ -9,7 +9,7 @@ The application starts on [http://localhost:8080](http://localhost:8080).
 
 ### Purpose
 
-This project is a project to get involved with __Spring Boot__ (Java, Maven), __Docker__ and __GitHub__ (Actions,
+This project has the purpose to get involved with __Spring Boot__ (Java, Maven), __Docker__ and __GitHub__ (Actions,
 Packages, Projects).
 
 ### Description
