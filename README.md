@@ -1,7 +1,7 @@
 [![Continuous-Integration](https://github.com/FoodAppGroup/FreshPlanner-API/actions/workflows/ci.yml/badge.svg)](https://github.com/FoodAppGroup/FreshPlanner-API/actions/workflows/ci.yml)
 [![Docker-Image](https://github.com/FoodAppGroup/FreshPlanner-API/actions/workflows/docker-image.yml/badge.svg)](https://github.com/FoodAppGroup/FreshPlanner-API/actions/workflows/docker-image.yml)
 
-# FreshPlanner API
+# Fresh Planner API
 
 This project was generated with [Spring Initializer](https://start.spring.io/) version 2.5.10.
 
