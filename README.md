@@ -1,5 +1,5 @@
-[![Continuous-Integration](https://github.com/FoodAppGroup/FreshPlanner-API/actions/workflows/ci.yml/badge.svg)](https://github.com/FoodAppGroup/FreshPlanner-API/actions/workflows/ci.yml)
-[![Docker-Image](https://github.com/FoodAppGroup/FreshPlanner-API/actions/workflows/docker-image.yml/badge.svg)](https://github.com/FoodAppGroup/FreshPlanner-API/actions/workflows/docker-image.yml)
+[![Continuous-Integration](https://github.com/home-planner-group/fresh-planner-api/actions/workflows/ci.yml/badge.svg)](https://github.com/home-planner-group/fresh-planner-api/actions/workflows/ci.yml)
+[![Docker-Image](https://github.com/home-planner-group/fresh-planner-api/actions/workflows/docker-image.yml/badge.svg)](https://github.com/home-planner-group/fresh-planner-api/actions/workflows/docker-image.yml)
 
 # Fresh Planner API
 
