@@ -22,8 +22,6 @@ shopping cart.
 
 ## Architecture
 
-### Overview
-
 ```
          Http Entrypoint <-- Security Filter
                 |                   |
@@ -36,7 +34,8 @@ Models -->  Controller   <-- Configuration <-- Main
             MySQL DBMS
 ```
 
-### Explanation
+<details>
+  <summary>Explanations</summary>
 
 * Http Entrypoint = `localhost:8080/request-path`
 * Security Filter = [security-package](src/main/java/com/freshplanner/api/security)
@@ -48,6 +47,44 @@ Models -->  Controller   <-- Configuration <-- Main
 * Repository = [Repository-classes in database package](src/main/java/com/freshplanner/api/database)
 * Entity = [Entity-classes in database package](src/main/java/com/freshplanner/api/database)
 * MySQL DBMS = `mysql://localhost:3306`
+
+</details>
+
+## GitHub Workflows & Docker Image
+
+<details>
+  <summary>Dockerfile</summary>
+
+* [Dockerfile](Dockerfile)
+* Multistage Build: __Builder__ & __Runner__
+* Image with [Alpine JDK](https://hub.docker.com/_/openjdk) and the executable `JAR`
+* Exposes `Port 8080`
+* Uses by default __MySQL DB__ at `Port 3306`
+* Detailed configuration: [prod.properties](src/main/resources/application-prod.properties)
+
+</details>
+
+<details>
+  <summary>Continuous Integration Workflow</summary>
+
+*[.github/workflows/ci.yml](.github/workflows/ci.yml)
+
+* __Trigger:__ all pushes
+* Executes `mvn install`
+* Run `mvn test` with MySQL DB
+* Perform __CodeQL__ Analysis with Java
+
+</details>
+
+<details>
+  <summary>Docker Image Delivery Workflow</summary>
+
+* [.github/workflows/docker-image.yml](.github/workflows/docker-image.yml)
+* __Trigger:__ manual or on published release
+* Executes `docker build`
+* Execute `docker push` to GitHub Packages
+
+</details>
 
 ## Dev Requirements
 
@@ -80,26 +117,3 @@ Models -->  Controller   <-- Configuration <-- Main
 * Spring Security with JWT
 * Spring Boot Validation
 * [Spring Boot Maven Plugin](https://docs.spring.io/spring-boot/docs/2.6.4/maven-plugin/reference/html/)
-
-## GitHub Workflows
-
-### [Continuous Integration](.github/workflows/ci.yml)
-
-* __Trigger:__ all pushes
-* Executes `mvn install`
-* Run `mvn test` with MySQL DB
-* Perform __CodeQL__ Analysis with Java
-
-### [Docker Image for GitHub](.github/workflows/docker-image.yml)
-
-* __Trigger:__ manual or on published release
-* Executes `docker build`
-* Execute `docker push` to GitHub Packages
-
-## [Docker Image](Dockerfile)
-
-* Divided into __Builder__ and __Runner__
-* Image with [Alpine JDK](https://hub.docker.com/_/openjdk) and the executable `JAR`
-* Exposes `Port 8080`
-* Uses by default __MySQL DB__ at `Port 3306`
-* Detailed configuration: [prod.properties](src/main/resources/application-prod.properties)

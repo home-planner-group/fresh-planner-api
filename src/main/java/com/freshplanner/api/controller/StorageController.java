@@ -38,7 +38,7 @@ public class StorageController {
         String username = SecurityContext.extractUsername();
 
         return ResponseEntity.ok(new StorageModel(
-                storageDB.addStorage(username, storageModel)));
+                storageDB.insertStorage(username, storageModel)));
     }
 
     @PreAuthorize("hasRole('USER') or hasRole('EDITOR') or hasRole('ADMIN')")
@@ -50,7 +50,7 @@ public class StorageController {
         String username = SecurityContext.extractUsername();
 
         return ResponseEntity.ok(new StorageModel(
-                storageDB.addStorageItem(username, storageId, item)));
+                storageDB.insertStorageItem(username, storageId, item)));
     }
 
     // === GET =========================================================================================================
@@ -62,7 +62,7 @@ public class StorageController {
         String username = SecurityContext.extractUsername();
 
         return ResponseEntity.ok(
-                storageDB.getUserStorages(username)
+                storageDB.selectUserStorages(username)
                         .stream().map(StorageSummaryModel::new).collect(Collectors.toList()));
     }
 
@@ -74,7 +74,7 @@ public class StorageController {
         String username = SecurityContext.extractUsername();
 
         return ResponseEntity.ok(new StorageModel(
-                storageDB.getStorageById(username, storageId)));
+                storageDB.selectStorageById(username, storageId)));
     }
 
     // === PUT =========================================================================================================
