@@ -56,23 +56,22 @@ Models -->  Controller   <-- Configuration <-- Main
   <summary>Dockerfile</summary>
 
 * [Dockerfile](Dockerfile)
-* Multistage Build: __Builder__ & __Runner__
-* Image with [Alpine JDK](https://hub.docker.com/_/openjdk) and the executable `JAR`
-* Exposes `Port 8080`
-* Uses by default __MySQL DB__ at `Port 3306`
-* Detailed configuration: [prod.properties](src/main/resources/application-prod.properties)
+  * Multistage Build: __Builder__ & __Runner__
+  * Image with [Alpine JDK](https://hub.docker.com/_/openjdk) and the executable `JAR`
+  * Exposes `Port 8080`
+  * Uses by default __MySQL DB__ at `Port 3306`
+  * Detailed configuration: [prod.properties](src/main/resources/application-prod.properties)
 
 </details>
 
 <details>
   <summary>Continuous Integration Workflow</summary>
 
-*[.github/workflows/ci.yml](.github/workflows/ci.yml)
-
-* __Trigger:__ all pushes
-* Executes `mvn install`
-* Run `mvn test` with MySQL DB
-* Perform __CodeQL__ Analysis with Java
+* [.github/workflows/ci.yml](.github/workflows/ci.yml)
+  * __Trigger:__ all pushes
+  * Executes `mvn install`
+  * Run `mvn test` with MySQL DB
+  * Perform __CodeQL__ Analysis with Java
 
 </details>
 
@@ -80,9 +79,9 @@ Models -->  Controller   <-- Configuration <-- Main
   <summary>Docker Image Delivery Workflow</summary>
 
 * [.github/workflows/docker-image.yml](.github/workflows/docker-image.yml)
-* __Trigger:__ manual or on published release
-* Executes `docker build`
-* Execute `docker push` to GitHub Packages
+  * __Trigger:__ manual or on published release
+  * Executes `docker build`
+  * Execute `docker push` to GitHub Packages
 
 </details>
 
