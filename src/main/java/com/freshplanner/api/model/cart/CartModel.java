@@ -25,6 +25,7 @@ public class CartModel {
     @ApiModelProperty(value = "Cart name", example = "Home")
     private String name;
 
+    @ApiModelProperty(value = "List of owners")
     private List<String> users;
 
     private List<Item> items;
@@ -45,8 +46,14 @@ public class CartModel {
         @ApiModelProperty(value = "Generated database id", example = "1")
         private Integer productId;
 
-        @ApiModelProperty(value = "Name of the product", example = "Apple")
+        @ApiModelProperty(value = "Name of the product", example = "Product Name")
         private String productName;
+
+        @ApiModelProperty(value = "Category of the product", example = "Category Name")
+        private String category;
+
+        @ApiModelProperty(value = "Package Size of the product in the unit", example = "500")
+        private Float packageSize;
 
         @ApiModelProperty(value = "Product count in the storage", example = "1")
         private Float count;
@@ -57,6 +64,8 @@ public class CartModel {
         public Item(CartItem item) {
             this.productId = item.getProduct().getId();
             this.productName = item.getProduct().getName();
+            this.category = item.getProduct().getCategory();
+            this.packageSize = item.getProduct().getPackageSize();
             this.count = item.getCount();
             this.unit = item.getProduct().getUnit();
         }

@@ -19,8 +19,10 @@ public class StorageSummaryModel {
     @ApiModelProperty(value = "Storage name", example = "Home")
     private String name;
 
+    @ApiModelProperty(value = "Count of owners", example = "1")
     private Integer userCount;
 
+    @ApiModelProperty(value = "Count of items", example = "1")
     private Integer itemCount;
 
     public StorageSummaryModel(Storage storage) {
