@@ -1,7 +1,9 @@
 package com.freshplanner.api.model.cart;
 
+import com.freshplanner.api.database.cart.Cart;
+import com.freshplanner.api.database.cart.CartItem;
 import com.freshplanner.api.database.enums.Unit;
-import com.freshplanner.api.database.storage.StorageItem;
+import com.freshplanner.api.database.user.User;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -9,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @ApiModel
@@ -26,13 +29,12 @@ public class CartModel {
 
     private List<Item> items;
 
-    // TODO cart consturctor
-//    public CartModel(Storage storage) {
-//        this.id = storage.getId();
-//        this.name = "Work in progress!";
-//        this.users = storage.getUsers().stream().map(User::getName).collect(Collectors.toList());
-//        this.items = storage.getStorageItems().stream().map(Item::new).collect(Collectors.toList());
-//    }
+    public CartModel(Cart cart) {
+        this.id = cart.getId();
+        this.name = cart.getName();
+        this.users = cart.getUsers().stream().map(User::getName).collect(Collectors.toList());
+        this.items = cart.getCartItems().stream().map(Item::new).collect(Collectors.toList());
+    }
 
     @Data
     @ApiModel
@@ -52,7 +54,7 @@ public class CartModel {
         @ApiModelProperty(value = "Unit of the product in the package", example = "GRAM")
         private Unit unit;
 
-        public Item(StorageItem item) {
+        public Item(CartItem item) {
             this.productId = item.getProduct().getId();
             this.productName = item.getProduct().getName();
             this.count = item.getCount();
