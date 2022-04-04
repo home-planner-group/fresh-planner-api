@@ -1,12 +1,12 @@
 package com.freshplanner.api.database.storage;
 
 import com.freshplanner.api.database.user.User;
+import com.freshplanner.api.model.storage.StorageModel;
 import com.freshplanner.api.model.storage.StorageSummaryModel;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -45,6 +45,13 @@ public class Storage implements Serializable {
         this.users.add(user);
     }
 
+    public Storage update(StorageModel storageModel) {
+        if (storageModel.getName() != null) {
+            this.name = storageModel.getName();
+        }
+        return this;
+    }
+
     public Storage addUser(User user) {
         users.add(user);
         return this;
@@ -62,23 +69,29 @@ public class Storage implements Serializable {
         return matchingUser.isPresent();
     }
 
-    // === OBJECT DEFAULT METHODS ======================================================================================
-
     @Override
     public String toString() {
-        return "Storage{id=" + id + "}";
+        return "Storage{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || Hibernate.getClass(this) != Hibernate.getClass(obj)) return false;
-        Storage storage = (Storage) obj;
-        return id.equals(storage.id);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Storage storage = (Storage) o;
+
+        if (!Objects.equals(id, storage.id)) return false;
+        return Objects.equals(name, storage.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
     }
 }

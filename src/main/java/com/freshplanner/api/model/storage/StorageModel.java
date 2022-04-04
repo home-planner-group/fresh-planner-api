@@ -25,6 +25,7 @@ public class StorageModel {
     @ApiModelProperty(value = "Storage name", example = "Home")
     private String name;
 
+    @ApiModelProperty(value = "List of owners")
     private List<String> users;
 
     private List<Item> items;
@@ -45,13 +46,13 @@ public class StorageModel {
         @ApiModelProperty(value = "Generated database id", example = "1")
         private Integer productId;
 
-        @ApiModelProperty(value = "Name of the product", example = "Apple")
+        @ApiModelProperty(value = "Name of the product", example = "Product Name")
         private String productName;
 
-        @ApiModelProperty(value = "Name of the product", example = "Apple")
+        @ApiModelProperty(value = "Category of the product", example = "Category Name")
         private String category;
 
-        @ApiModelProperty(value = "Name of the product", example = "Apple")
+        @ApiModelProperty(value = "Package Size of the product in the unit", example = "500")
         private Float packageSize;
 
         @ApiModelProperty(value = "Product count in the storage", example = "1")
