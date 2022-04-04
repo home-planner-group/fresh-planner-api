@@ -19,14 +19,14 @@ public class StorageDB {
 
     private final StorageRepo storageRepo;
     private final StorageItemRepo storageItemRepo;
-    private final ProductDB productSelector;
+    private final ProductDB productDB;
     private final UserDB userDB;
 
     @Autowired
-    public StorageDB(StorageRepo storageRepo, StorageItemRepo storageItemRepo, ProductDB productSelector, UserDB userDB) {
+    public StorageDB(StorageRepo storageRepo, StorageItemRepo storageItemRepo, ProductDB productDB, UserDB userDB) {
         this.storageRepo = storageRepo;
         this.storageItemRepo = storageItemRepo;
-        this.productSelector = productSelector;
+        this.productDB = productDB;
         this.userDB = userDB;
     }
 
@@ -66,7 +66,7 @@ public class StorageDB {
      * @return list with result objects
      */
     public List<Storage> selectUserStorages(String username) {
-        return storageRepo.findStorageByUsername(username);
+        return storageRepo.findStoragesByUsername(username);
     }
 
     private StorageItem selectStorageItemById(Integer storageId, Integer productId) throws ElementNotFoundException {
@@ -110,7 +110,7 @@ public class StorageDB {
         Storage storage = selectStorageById(username, storageId);
         StorageItem item = storageItemRepo.save(new StorageItem(
                 storage,
-                productSelector.selectProductById(storageItemModel.getProductId()),
+                productDB.selectProductById(storageItemModel.getProductId()),
                 storageItemModel.getCount()));
         storage.getStorageItems().add(item);
         return storage;
