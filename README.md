@@ -43,9 +43,9 @@ Models -->  Controller   <-- Configuration <-- Main
 * Main = [Main Class](src/main/java/com/freshplanner/api/Application.java)
 * Controller = [controller-package](src/main/java/com/freshplanner/api/controller)
 * Models = [model-package](src/main/java/com/freshplanner/api/model)
-* Database = [DB-classes in database package](src/main/java/com/freshplanner/api/database)
-* Repository = [Repository-classes in database package](src/main/java/com/freshplanner/api/database)
-* Entity = [Entity-classes in database package](src/main/java/com/freshplanner/api/database)
+* Database = [DB-classes in database package](src/main/java/com/freshplanner/api/service)
+* Repository = [Repository-classes in database package](src/main/java/com/freshplanner/api/service)
+* Entity = [Entity-classes in database package](src/main/java/com/freshplanner/api/service)
 * MySQL DBMS = `mysql://localhost:3306`
 
 </details>

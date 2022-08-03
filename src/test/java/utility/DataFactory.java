@@ -1,9 +1,9 @@
 package utility;
 
-import com.freshplanner.api.database.enums.Unit;
 import com.freshplanner.api.model.authentication.RegistrationModel;
 import com.freshplanner.api.model.product.ProductModel;
 import com.freshplanner.api.model.recipe.RecipeModel;
+import com.freshplanner.api.service.enums.Unit;
 
 import java.util.ArrayList;
 

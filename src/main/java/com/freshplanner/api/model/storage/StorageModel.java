@@ -1,9 +1,9 @@
 package com.freshplanner.api.model.storage;
 
-import com.freshplanner.api.database.enums.Unit;
-import com.freshplanner.api.database.storage.Storage;
-import com.freshplanner.api.database.storage.StorageItem;
-import com.freshplanner.api.database.user.User;
+import com.freshplanner.api.service.enums.Unit;
+import com.freshplanner.api.service.storage.Storage;
+import com.freshplanner.api.service.storage.StorageItem;
+import com.freshplanner.api.service.user.User;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

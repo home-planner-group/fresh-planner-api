@@ -1,10 +1,10 @@
 package com.freshplanner.api.controller;
 
-import com.freshplanner.api.database.enums.Unit;
-import com.freshplanner.api.database.product.ProductDB;
 import com.freshplanner.api.exception.ElementNotFoundException;
 import com.freshplanner.api.model.product.ProductModel;
 import com.freshplanner.api.model.product.ProductSummaryModel;
+import com.freshplanner.api.service.enums.Unit;
+import com.freshplanner.api.service.product.ProductDB;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;

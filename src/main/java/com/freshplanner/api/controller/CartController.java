@@ -1,11 +1,11 @@
 package com.freshplanner.api.controller;
 
-import com.freshplanner.api.database.cart.CartDB;
 import com.freshplanner.api.exception.ElementNotFoundException;
 import com.freshplanner.api.exception.NoAccessException;
 import com.freshplanner.api.model.cart.CartModel;
 import com.freshplanner.api.model.cart.CartSummaryModel;
 import com.freshplanner.api.security.SecurityContext;
+import com.freshplanner.api.service.cart.CartDB;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;

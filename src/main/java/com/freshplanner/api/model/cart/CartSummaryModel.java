@@ -1,6 +1,6 @@
 package com.freshplanner.api.model.cart;
 
-import com.freshplanner.api.database.cart.Cart;
+import com.freshplanner.api.service.cart.Cart;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

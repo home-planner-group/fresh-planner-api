@@ -1,9 +1,9 @@
 package environment;
 
 import com.freshplanner.api.Application;
-import com.freshplanner.api.database.user.UserDB;
 import com.freshplanner.api.model.authentication.RegistrationModel;
 import com.freshplanner.api.model.authentication.UserAuthModel;
+import com.freshplanner.api.service.user.UserDB;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,7 +17,7 @@ import utility.DataFactory;
 import utility.JsonFactory;
 import utility.TestLogger;
 
-import static com.freshplanner.api.database.enums.RoleName.ROLE_ADMIN;
+import static com.freshplanner.api.service.enums.RoleName.ROLE_ADMIN;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;

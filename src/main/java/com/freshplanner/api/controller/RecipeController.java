@@ -1,9 +1,9 @@
 package com.freshplanner.api.controller;
 
-import com.freshplanner.api.database.recipe.RecipeDB;
 import com.freshplanner.api.exception.ElementNotFoundException;
 import com.freshplanner.api.model.recipe.RecipeModel;
 import com.freshplanner.api.model.recipe.RecipeSummaryModel;
+import com.freshplanner.api.service.recipe.RecipeDB;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;

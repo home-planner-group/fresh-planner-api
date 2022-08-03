@@ -1,6 +1,6 @@
 package com.freshplanner.api.model.storage;
 
-import com.freshplanner.api.database.storage.Storage;
+import com.freshplanner.api.service.storage.Storage;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

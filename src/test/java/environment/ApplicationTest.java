@@ -1,17 +1,17 @@
 package environment;
 
 import com.freshplanner.api.Application;
-import com.freshplanner.api.database.user.User;
-import com.freshplanner.api.database.user.UserDB;
 import com.freshplanner.api.exception.ElementNotFoundException;
 import com.freshplanner.api.model.authentication.RegistrationModel;
+import com.freshplanner.api.service.user.User;
+import com.freshplanner.api.service.user.UserDB;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import utility.DataFactory;
 import utility.TestLogger;
 
-import static com.freshplanner.api.database.enums.RoleName.ROLE_ADMIN;
+import static com.freshplanner.api.service.enums.RoleName.ROLE_ADMIN;
 import static utility.AssertionUtils.assertEquals;
 
 /**

@@ -1,6 +1,6 @@
 package com.freshplanner.api.model.recipe;
 
-import com.freshplanner.api.database.recipe.Recipe;
+import com.freshplanner.api.service.recipe.Recipe;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,7 @@
 package com.freshplanner.api.security;
 
-import com.freshplanner.api.database.user.UserDB;
 import com.freshplanner.api.exception.ElementNotFoundException;
+import com.freshplanner.api.service.user.UserDB;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

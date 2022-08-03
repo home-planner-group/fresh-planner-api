@@ -1,8 +1,8 @@
 package com.freshplanner.api.model.authentication;
 
-import com.freshplanner.api.database.enums.RoleName;
-import com.freshplanner.api.database.user.Role;
-import com.freshplanner.api.database.user.User;
+import com.freshplanner.api.service.enums.RoleName;
+import com.freshplanner.api.service.user.Role;
+import com.freshplanner.api.service.user.User;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,7 @@
 package com.freshplanner.api.model.product;
 
-import com.freshplanner.api.database.enums.Unit;
-import com.freshplanner.api.database.product.Product;
+import com.freshplanner.api.service.enums.Unit;
+import com.freshplanner.api.service.product.Product;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

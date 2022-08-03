@@ -1,11 +1,11 @@
 package com.freshplanner.api.controller;
 
-import com.freshplanner.api.database.storage.StorageDB;
 import com.freshplanner.api.exception.ElementNotFoundException;
 import com.freshplanner.api.exception.NoAccessException;
 import com.freshplanner.api.model.storage.StorageModel;
 import com.freshplanner.api.model.storage.StorageSummaryModel;
 import com.freshplanner.api.security.SecurityContext;
+import com.freshplanner.api.service.storage.StorageDB;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
