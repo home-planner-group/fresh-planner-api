@@ -1,7 +1,9 @@
 package com.freshplanner.api.service.product;
 
 import com.freshplanner.api.exception.ElementNotFoundException;
+import org.springframework.stereotype.Service;
 
+@Service
 public interface ProductService {
     /**
      * SELECT product WHERE productId
