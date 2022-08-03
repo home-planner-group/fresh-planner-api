@@ -1,7 +1,7 @@
 package com.freshplanner.api.service.recipe;
 
+import com.freshplanner.api.controller.model.Recipe;
 import com.freshplanner.api.exception.ElementNotFoundException;
-import com.freshplanner.api.model.recipe.RecipeModel;
 import com.freshplanner.api.service.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,10 +18,10 @@ public class RecipeDB {
     private final ProductService productService;
 
     @Autowired
-    public RecipeDB(RecipeRepo recipeRepo, RecipeItemRepo recipeItemRepo, ProductService productSErvice) {
+    public RecipeDB(RecipeRepo recipeRepo, RecipeItemRepo recipeItemRepo, ProductService recipeService) {
         this.recipeRepo = recipeRepo;
         this.recipeItemRepo = recipeItemRepo;
-        this.productService = productSErvice;
+        this.productService = recipeService;
     }
 
     // === SELECT ======================================================================================================
@@ -33,12 +33,12 @@ public class RecipeDB {
      * @return result object
      * @throws ElementNotFoundException if id does not exist
      */
-    public Recipe selectRecipeById(Integer recipeId) throws ElementNotFoundException {
-        Optional<Recipe> recipe = recipeRepo.findById(recipeId);
+    public RecipeEntity selectRecipeById(Integer recipeId) throws ElementNotFoundException {
+        Optional<RecipeEntity> recipe = recipeRepo.findById(recipeId);
         if (recipe.isPresent()) {
             return recipe.get();
         } else {
-            throw new ElementNotFoundException(Recipe.class, recipeId.toString());
+            throw new ElementNotFoundException(RecipeEntity.class, recipeId.toString());
         }
     }
 
@@ -58,7 +58,7 @@ public class RecipeDB {
      * @param recipeName partial name
      * @return list with result objects
      */
-    public List<Recipe> selectRecipesByName(String recipeName) {
+    public List<RecipeEntity> selectRecipesByName(String recipeName) {
         return recipeRepo.searchByName(recipeName);
     }
 
@@ -68,7 +68,7 @@ public class RecipeDB {
      * @param recipeCategory partial name
      * @return list with result objects
      */
-    public List<Recipe> selectRecipesByCategory(String recipeCategory) {
+    public List<RecipeEntity> selectRecipesByCategory(String recipeCategory) {
         return recipeRepo.searchByCategory(recipeCategory);
     }
 
@@ -77,7 +77,7 @@ public class RecipeDB {
      *
      * @return list with all objects
      */
-    public List<Recipe> selectAllRecipes() {
+    public List<RecipeEntity> selectAllRecipes() {
         return recipeRepo.findAll();
     }
 
@@ -100,9 +100,9 @@ public class RecipeDB {
      * @throws ElementNotFoundException if id does not exist
      */
     @Transactional
-    public Recipe insertRecipe(RecipeModel recipeModel) throws ElementNotFoundException {
-        Recipe recipe = recipeRepo.save(new Recipe(recipeModel));
-        for (RecipeModel.Item item : recipeModel.getItems()) {
+    public RecipeEntity insertRecipe(Recipe recipeModel) throws ElementNotFoundException {
+        RecipeEntity recipe = recipeRepo.save(new RecipeEntity(recipeModel));
+        for (Recipe.Item item : recipeModel.getItems()) {
             recipe.getRecipeItems().add(insertRecipeItem(recipe, item));
         }
         return recipe;
@@ -117,13 +117,13 @@ public class RecipeDB {
      * @throws ElementNotFoundException if id does not exist
      */
     @Transactional
-    public Recipe insertRecipeItem(int recipeId, RecipeModel.Item recipeItemModel) throws ElementNotFoundException {
-        Recipe recipe = selectRecipeById(recipeId);
+    public RecipeEntity insertRecipeItem(int recipeId, Recipe.Item recipeItemModel) throws ElementNotFoundException {
+        RecipeEntity recipe = selectRecipeById(recipeId);
         recipe.getRecipeItems().add(insertRecipeItem(recipe, recipeItemModel));
         return recipe;
     }
 
-    private RecipeItem insertRecipeItem(Recipe recipe, RecipeModel.Item recipeItemModel) throws ElementNotFoundException {
+    private RecipeItem insertRecipeItem(RecipeEntity recipe, Recipe.Item recipeItemModel) throws ElementNotFoundException {
         return recipeItemRepo.save(new RecipeItem(
                 recipe,
                 productService.selectProductById(recipeItemModel.getProductId()),
@@ -141,8 +141,8 @@ public class RecipeDB {
      * @throws ElementNotFoundException if id does not exist
      */
     @Transactional
-    public Recipe updateRecipe(RecipeModel recipeModel) throws ElementNotFoundException {
-        Recipe recipe = this.selectRecipeById(recipeModel.getId());
+    public RecipeEntity updateRecipe(Recipe recipeModel) throws ElementNotFoundException {
+        RecipeEntity recipe = this.selectRecipeById(recipeModel.getId());
         return recipeRepo.save(recipe.update(recipeModel));
     }
 
@@ -155,7 +155,7 @@ public class RecipeDB {
      * @throws ElementNotFoundException if id does not exist
      */
     @Transactional
-    public RecipeItem updateRecipeItem(int recipeId, RecipeModel.Item itemModel) throws ElementNotFoundException {
+    public RecipeItem updateRecipeItem(int recipeId, Recipe.Item itemModel) throws ElementNotFoundException {
         RecipeItem recipeItem = this.selectRecipeItemById(recipeId, itemModel.getProductId());
         return recipeItemRepo.save(recipeItem.update(itemModel));
     }
@@ -170,10 +170,10 @@ public class RecipeDB {
      * @return updated object
      * @throws ElementNotFoundException if id does not exist
      */
-    public Recipe deleteRecipeItemById(Integer recipeId, Integer productId) throws ElementNotFoundException {
+    public RecipeEntity deleteRecipeItemById(Integer recipeId, Integer productId) throws ElementNotFoundException {
         RecipeItem item = this.selectRecipeItemById(recipeId, productId);
         recipeItemRepo.delete(item);
-        Recipe recipe = selectRecipeById(recipeId);
+        RecipeEntity recipe = selectRecipeById(recipeId);
         recipe.getRecipeItems().remove(item);
         return recipe;
     }
@@ -185,8 +185,8 @@ public class RecipeDB {
      * @return deleted object
      * @throws ElementNotFoundException if id does not exist
      */
-    public Recipe deleteRecipeById(Integer recipeId) throws ElementNotFoundException {
-        Recipe recipe = this.selectRecipeById(recipeId);
+    public RecipeEntity deleteRecipeById(Integer recipeId) throws ElementNotFoundException {
+        RecipeEntity recipe = this.selectRecipeById(recipeId);
         recipeRepo.delete(recipe);
         return recipe;
     }

@@ -1,6 +1,6 @@
 package com.freshplanner.api.service.recipe;
 
-import com.freshplanner.api.model.recipe.RecipeModel;
+import com.freshplanner.api.controller.model.Recipe;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.Set;
 @Setter
 @Entity(name = "Recipe")
 @Table(name = "recipes")
-public class Recipe implements Serializable {
+public class RecipeEntity implements Serializable {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "recipe", orphanRemoval = true)
     private final Set<RecipeItem> recipeItems = new HashSet<>();
@@ -40,7 +40,7 @@ public class Recipe implements Serializable {
     @Column(name = "duration")
     private Integer duration;
 
-    public Recipe(RecipeModel recipe) {
+    public RecipeEntity(Recipe recipe) {
         // id gets generated
         this.name = recipe.getName();
         this.category = recipe.getCategory();
@@ -48,7 +48,11 @@ public class Recipe implements Serializable {
         this.description = recipe.getDescription();
     }
 
-    public Recipe update(RecipeModel model) {
+    public Recipe toModel() {
+        return new Recipe(this);
+    }
+
+    public RecipeEntity update(Recipe model) {
         if (model.getName() != null) {
             this.name = model.getName();
         }
@@ -76,7 +80,7 @@ public class Recipe implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Recipe recipe = (Recipe) o;
+        RecipeEntity recipe = (RecipeEntity) o;
 
         if (!Objects.equals(id, recipe.id)) return false;
         return Objects.equals(name, recipe.name);

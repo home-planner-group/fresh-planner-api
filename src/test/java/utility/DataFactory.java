@@ -2,7 +2,6 @@ package utility;
 
 import com.freshplanner.api.enums.Unit;
 import com.freshplanner.api.model.authentication.RegistrationModel;
-import com.freshplanner.api.model.recipe.RecipeModel;
 
 import java.util.ArrayList;
 
@@ -49,8 +48,8 @@ public class DataFactory {
     }
 
     public static class Recipe {
-        public static RecipeModel recipeModelV1(Integer id) {
-            return new RecipeModel(
+        public static com.freshplanner.api.controller.model.Recipe recipeModelV1(Integer id) {
+            return new com.freshplanner.api.controller.model.Recipe(
                     id,
                     "TestRecipe",
                     "TestCategory",
@@ -64,8 +63,8 @@ public class DataFactory {
             );
         }
 
-        public static RecipeModel recipeModelV2(Integer id) {
-            return new RecipeModel(
+        public static com.freshplanner.api.controller.model.Recipe recipeModelV2(Integer id) {
+            return new com.freshplanner.api.controller.model.Recipe(
                     id,
                     "TestRecipeEdited",
                     "TestCategoryEdited",
@@ -79,8 +78,8 @@ public class DataFactory {
             );
         }
 
-        public static RecipeModel.Item recipeItemV1(Integer productId) {
-            return new RecipeModel.Item(
+        public static com.freshplanner.api.controller.model.Recipe.Item recipeItemV1(Integer productId) {
+            return new com.freshplanner.api.controller.model.Recipe.Item(
                     productId,
                     "Placeholder",
                     1f,
@@ -89,8 +88,8 @@ public class DataFactory {
             );
         }
 
-        public static RecipeModel.Item recipeItemV2(Integer productId) {
-            return new RecipeModel.Item(
+        public static com.freshplanner.api.controller.model.Recipe.Item recipeItemV2(Integer productId) {
+            return new com.freshplanner.api.controller.model.Recipe.Item(
                     productId,
                     "Placeholder",
                     2f,
