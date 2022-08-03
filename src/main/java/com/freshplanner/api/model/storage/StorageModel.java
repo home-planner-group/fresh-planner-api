@@ -1,6 +1,6 @@
 package com.freshplanner.api.model.storage;
 
-import com.freshplanner.api.service.enums.Unit;
+import com.freshplanner.api.enums.Unit;
 import com.freshplanner.api.service.storage.Storage;
 import com.freshplanner.api.service.storage.StorageItem;
 import com.freshplanner.api.service.user.User;

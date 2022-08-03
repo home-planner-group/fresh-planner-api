@@ -4,7 +4,7 @@ import com.freshplanner.api.exception.ElementNotFoundException;
 import com.freshplanner.api.exception.NoAccessException;
 import com.freshplanner.api.model.cart.CartModel;
 import com.freshplanner.api.model.cart.CartSummaryModel;
-import com.freshplanner.api.service.product.ProductDB;
+import com.freshplanner.api.service.product.ProductService;
 import com.freshplanner.api.service.user.User;
 import com.freshplanner.api.service.user.UserDB;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +19,14 @@ public class CartDB {
 
     private final CartRepo cartRepo;
     private final CartItemRepo cartItemRepo;
-    private final ProductDB productDB;
+    private final ProductService productService;
     private final UserDB userDB;
 
     @Autowired
-    public CartDB(CartRepo cartRepo, CartItemRepo cartItemRpo, ProductDB productDB, UserDB userDB) {
+    public CartDB(CartRepo cartRepo, CartItemRepo cartItemRpo, ProductService productService, UserDB userDB) {
         this.cartRepo = cartRepo;
         this.cartItemRepo = cartItemRpo;
-        this.productDB = productDB;
+        this.productService = productService;
         this.userDB = userDB;
     }
 
@@ -110,7 +110,7 @@ public class CartDB {
         Cart cart = selectCartById(username, cartId);
         CartItem item = cartItemRepo.save(new CartItem(
                 cart,
-                productDB.selectProductById(cartItemModel.getProductId()),
+                productService.selectProductById(cartItemModel.getProductId()),
                 cartItemModel.getCount()));
         cart.getCartItems().add(item);
         return cart;

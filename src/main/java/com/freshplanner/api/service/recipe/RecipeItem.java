@@ -1,7 +1,7 @@
 package com.freshplanner.api.service.recipe;
 
 import com.freshplanner.api.model.recipe.RecipeModel;
-import com.freshplanner.api.service.product.Product;
+import com.freshplanner.api.service.product.ProductEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -27,7 +27,7 @@ public class RecipeItem implements Serializable {
     @Id
     @ManyToOne
     @JoinColumn(name = "product_id", referencedColumnName = "id")
-    private Product product;
+    private ProductEntity product;
 
     @Column(name = "count", nullable = false)
     private Float count;

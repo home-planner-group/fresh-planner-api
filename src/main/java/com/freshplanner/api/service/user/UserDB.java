@@ -1,9 +1,9 @@
 package com.freshplanner.api.service.user;
 
+import com.freshplanner.api.enums.RoleName;
 import com.freshplanner.api.exception.ElementNotFoundException;
 import com.freshplanner.api.exception.InvalidPasswordException;
 import com.freshplanner.api.model.authentication.RegistrationModel;
-import com.freshplanner.api.service.enums.RoleName;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 

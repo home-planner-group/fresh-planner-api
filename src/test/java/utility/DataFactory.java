@@ -1,9 +1,8 @@
 package utility;
 
+import com.freshplanner.api.enums.Unit;
 import com.freshplanner.api.model.authentication.RegistrationModel;
-import com.freshplanner.api.model.product.ProductModel;
 import com.freshplanner.api.model.recipe.RecipeModel;
-import com.freshplanner.api.service.enums.Unit;
 
 import java.util.ArrayList;
 
@@ -21,8 +20,8 @@ public class DataFactory {
     }
 
     public static class Product {
-        public static ProductModel productModelV1(Integer id) {
-            return new ProductModel(
+        public static com.freshplanner.api.controller.model.Product productModelV1(Integer id) {
+            return new com.freshplanner.api.controller.model.Product(
                     id,
                     "TestProduct",
                     "TestCategory",
@@ -34,9 +33,9 @@ public class DataFactory {
                     30f);
         }
 
-        public static ProductModel productModelV2(Integer id) {
-            ProductModel modelV1 = productModelV1(id);
-            return new ProductModel(
+        public static com.freshplanner.api.controller.model.Product productModelV2(Integer id) {
+            com.freshplanner.api.controller.model.Product modelV1 = productModelV1(id);
+            return new com.freshplanner.api.controller.model.Product(
                     id,
                     modelV1.getName(),
                     modelV1.getCategory(),

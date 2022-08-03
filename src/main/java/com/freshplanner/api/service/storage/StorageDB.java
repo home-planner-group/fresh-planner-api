@@ -4,7 +4,7 @@ import com.freshplanner.api.exception.ElementNotFoundException;
 import com.freshplanner.api.exception.NoAccessException;
 import com.freshplanner.api.model.storage.StorageModel;
 import com.freshplanner.api.model.storage.StorageSummaryModel;
-import com.freshplanner.api.service.product.ProductDB;
+import com.freshplanner.api.service.product.ProductService;
 import com.freshplanner.api.service.user.User;
 import com.freshplanner.api.service.user.UserDB;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +19,14 @@ public class StorageDB {
 
     private final StorageRepo storageRepo;
     private final StorageItemRepo storageItemRepo;
-    private final ProductDB productDB;
+    private final ProductService productService;
     private final UserDB userDB;
 
     @Autowired
-    public StorageDB(StorageRepo storageRepo, StorageItemRepo storageItemRepo, ProductDB productDB, UserDB userDB) {
+    public StorageDB(StorageRepo storageRepo, StorageItemRepo storageItemRepo, ProductService productService, UserDB userDB) {
         this.storageRepo = storageRepo;
         this.storageItemRepo = storageItemRepo;
-        this.productDB = productDB;
+        this.productService = productService;
         this.userDB = userDB;
     }
 
@@ -110,7 +110,7 @@ public class StorageDB {
         Storage storage = selectStorageById(username, storageId);
         StorageItem item = storageItemRepo.save(new StorageItem(
                 storage,
-                productDB.selectProductById(storageItemModel.getProductId()),
+                productService.selectProductById(storageItemModel.getProductId()),
                 storageItemModel.getCount()));
         storage.getStorageItems().add(item);
         return storage;

@@ -1,7 +1,7 @@
 package com.freshplanner.api.model.recipe;
 
-import com.freshplanner.api.service.enums.Unit;
-import com.freshplanner.api.service.product.Product;
+import com.freshplanner.api.enums.Unit;
+import com.freshplanner.api.service.product.ProductEntity;
 import com.freshplanner.api.service.recipe.Recipe;
 import com.freshplanner.api.service.recipe.RecipeItem;
 import io.swagger.annotations.ApiModel;
@@ -61,7 +61,7 @@ public class RecipeModel {
             this.protein = 0f;
             this.fat = 0f;
             for (RecipeItem item : recipe.getRecipeItems()) {
-                Product product = item.getProduct();
+                ProductEntity product = item.getProduct();
                 this.kcal += product.getKcal() * item.getCount();
                 this.carbohydrates += product.getCarbohydrates() * item.getCount();
                 this.protein += product.getProtein() * item.getCount();

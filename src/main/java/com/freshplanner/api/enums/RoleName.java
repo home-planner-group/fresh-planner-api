@@ -1,4 +1,4 @@
-package com.freshplanner.api.service.enums;
+package com.freshplanner.api.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 

@@ -1,7 +1,7 @@
-package com.freshplanner.api.model.product;
+package com.freshplanner.api.controller.model;
 
-import com.freshplanner.api.service.enums.Unit;
-import com.freshplanner.api.service.product.Product;
+import com.freshplanner.api.enums.Unit;
+import com.freshplanner.api.service.product.ProductEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @ApiModel
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductModel {
+public class Product {
 
     @ApiModelProperty(value = "Generated database id", example = "1")
     private Integer id;
@@ -41,15 +41,15 @@ public class ProductModel {
     @ApiModelProperty(value = "Fat per 100g", example = "10")
     private Float fat;
 
-    public ProductModel(Product product) {
-        this.id = product.getId();
-        this.name = product.getName();
-        this.category = product.getCategory();
-        this.unit = product.getUnit();
-        this.packageSize = product.getPackageSize();
-        this.kcal = product.getKcal();
-        this.carbohydrates = product.getCarbohydrates();
-        this.protein = product.getProtein();
-        this.fat = product.getFat();
+    public Product(ProductEntity entity) {
+        this.id = entity.getId();
+        this.name = entity.getName();
+        this.category = entity.getCategory();
+        this.unit = entity.getUnit();
+        this.packageSize = entity.getPackageSize();
+        this.kcal = entity.getKcal();
+        this.carbohydrates = entity.getCarbohydrates();
+        this.protein = entity.getProtein();
+        this.fat = entity.getFat();
     }
 }

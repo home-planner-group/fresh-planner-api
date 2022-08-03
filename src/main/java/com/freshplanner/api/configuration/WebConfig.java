@@ -1,7 +1,7 @@
 package com.freshplanner.api.configuration;
 
-import com.freshplanner.api.service.enums.RoleName;
-import com.freshplanner.api.service.enums.Unit;
+import com.freshplanner.api.enums.RoleName;
+import com.freshplanner.api.enums.Unit;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;

@@ -1,7 +1,7 @@
 package com.freshplanner.api.service.product;
 
-import com.freshplanner.api.model.product.ProductModel;
-import com.freshplanner.api.service.enums.Unit;
+import com.freshplanner.api.controller.model.Product;
+import com.freshplanner.api.enums.Unit;
 import lombok.*;
 
 import javax.persistence.*;
@@ -14,7 +14,7 @@ import java.util.Objects;
 @ToString
 @Entity(name = "Product")
 @Table(name = "products")
-public class Product implements Serializable {
+public class ProductEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,7 +47,7 @@ public class Product implements Serializable {
     @Column(name = "fat")
     private Float fat;
 
-    public Product(ProductModel product) {
+    public ProductEntity(Product product) {
         // id gets generated
         this.name = product.getName();
         this.category = product.getCategory();
@@ -59,7 +59,11 @@ public class Product implements Serializable {
         this.fat = product.getFat();
     }
 
-    public Product update(ProductModel model) {
+    public Product getModel() {
+        return new Product(this);
+    }
+
+    public ProductEntity update(Product model) {
         if (model.getName() != null) {
             this.name = model.getName();
         }
@@ -100,7 +104,7 @@ public class Product implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Product product = (Product) o;
+        ProductEntity product = (ProductEntity) o;
 
         if (!Objects.equals(id, product.id)) return false;
         return Objects.equals(name, product.name);

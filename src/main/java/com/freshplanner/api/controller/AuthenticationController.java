@@ -1,5 +1,6 @@
 package com.freshplanner.api.controller;
 
+import com.freshplanner.api.enums.RoleName;
 import com.freshplanner.api.exception.ElementNotFoundException;
 import com.freshplanner.api.model.authentication.LoginModel;
 import com.freshplanner.api.model.authentication.RegistrationModel;
@@ -7,7 +8,6 @@ import com.freshplanner.api.model.authentication.UserAuthModel;
 import com.freshplanner.api.model.authentication.UserInfoModel;
 import com.freshplanner.api.security.JwtManager;
 import com.freshplanner.api.security.SecurityContext;
-import com.freshplanner.api.service.enums.RoleName;
 import com.freshplanner.api.service.user.User;
 import com.freshplanner.api.service.user.UserDB;
 import io.swagger.annotations.ApiOperation;

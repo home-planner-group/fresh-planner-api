@@ -1,6 +1,6 @@
 package com.freshplanner.api.service.user;
 
-import com.freshplanner.api.service.enums.RoleName;
+import com.freshplanner.api.enums.RoleName;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.Hibernate;

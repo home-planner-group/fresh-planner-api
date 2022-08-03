@@ -17,7 +17,7 @@ import utility.DataFactory;
 import utility.JsonFactory;
 import utility.TestLogger;
 
-import static com.freshplanner.api.service.enums.RoleName.ROLE_ADMIN;
+import static com.freshplanner.api.enums.RoleName.ROLE_ADMIN;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;

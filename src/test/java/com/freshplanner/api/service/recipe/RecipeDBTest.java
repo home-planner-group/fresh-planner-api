@@ -1,10 +1,10 @@
 package com.freshplanner.api.service.recipe;
 
+import com.freshplanner.api.controller.model.Product;
 import com.freshplanner.api.exception.ElementNotFoundException;
-import com.freshplanner.api.model.product.ProductModel;
 import com.freshplanner.api.model.recipe.RecipeModel;
-import com.freshplanner.api.service.product.Product;
 import com.freshplanner.api.service.product.ProductDB;
+import com.freshplanner.api.service.product.ProductEntity;
 import environment.ApplicationTest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -28,15 +28,15 @@ class RecipeDBTest extends ApplicationTest {
     @Autowired
     private RecipeDB recipeDB;
 
-    private Product productExpected;
+    private ProductEntity productExpected;
     private Recipe recipeExpected;
 
     @BeforeAll
     void beforeAll() {
-        ProductModel productModel = DataFactory.Product.productModelV1(null);
+        Product productModel = DataFactory.Product.productModelV1(null);
         TestLogger.info("Model for operation: " + productModel);
 
-        Product productActual = productDB.insertProduct(productModel);
+        ProductEntity productActual = productDB.insertProduct(productModel);
         assertNotNull(productActual.getId());
         assertEquals(productModel.getName(), productActual.getName());
 
@@ -184,7 +184,7 @@ class RecipeDBTest extends ApplicationTest {
 
     @AfterAll
     void afterAll() throws ElementNotFoundException {
-        Product productActual = productDB.deleteProductById(productExpected.getId());
+        ProductEntity productActual = productDB.deleteProductById(productExpected.getId());
         assertEquals(productExpected, productActual);
 
         productExpected = productActual;

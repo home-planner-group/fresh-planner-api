@@ -2,7 +2,7 @@ package com.freshplanner.api.service.recipe;
 
 import com.freshplanner.api.exception.ElementNotFoundException;
 import com.freshplanner.api.model.recipe.RecipeModel;
-import com.freshplanner.api.service.product.ProductDB;
+import com.freshplanner.api.service.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,13 +15,13 @@ public class RecipeDB {
 
     private final RecipeRepo recipeRepo;
     private final RecipeItemRepo recipeItemRepo;
-    private final ProductDB productSelector;
+    private final ProductService productService;
 
     @Autowired
-    public RecipeDB(RecipeRepo recipeRepo, RecipeItemRepo recipeItemRepo, ProductDB productDB) {
+    public RecipeDB(RecipeRepo recipeRepo, RecipeItemRepo recipeItemRepo, ProductService productSErvice) {
         this.recipeRepo = recipeRepo;
         this.recipeItemRepo = recipeItemRepo;
-        this.productSelector = productDB;
+        this.productService = productSErvice;
     }
 
     // === SELECT ======================================================================================================
@@ -126,7 +126,7 @@ public class RecipeDB {
     private RecipeItem insertRecipeItem(Recipe recipe, RecipeModel.Item recipeItemModel) throws ElementNotFoundException {
         return recipeItemRepo.save(new RecipeItem(
                 recipe,
-                productSelector.selectProductById(recipeItemModel.getProductId()),
+                productService.selectProductById(recipeItemModel.getProductId()),
                 recipeItemModel.getCount(),
                 recipeItemModel.getDescription()));
     }

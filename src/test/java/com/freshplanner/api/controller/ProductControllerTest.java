@@ -1,6 +1,6 @@
 package com.freshplanner.api.controller;
 
-import com.freshplanner.api.model.product.ProductModel;
+import com.freshplanner.api.controller.model.Product;
 import environment.ControllerTest;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -18,12 +18,12 @@ import static utility.AssertionUtils.*;
 
 class ProductControllerTest extends ControllerTest {
 
-    private ProductModel productExpected;
+    private Product productExpected;
 
     @Test
     @Order(1)
     void addProduct() throws Exception {
-        ProductModel productModel = DataFactory.Product.productModelV1(null);
+        Product productModel = DataFactory.Product.productModelV1(null);
         TestLogger.info("Model for operation: " + productModel);
         String modelJson = JsonFactory.convertToJson(productModel);
         TestLogger.info("Json for operation: " + modelJson);
@@ -37,7 +37,7 @@ class ProductControllerTest extends ControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        ProductModel productActual = JsonFactory.convertToObject(result, ProductModel.class);
+        Product productActual = JsonFactory.convertToObject(result, Product.class);
         assertNotNull(productActual);
         assertNotNull(productActual.getId());
         assertEquals(productModel.getName(), productActual.getName());
@@ -115,7 +115,7 @@ class ProductControllerTest extends ControllerTest {
     @Test
     @Order(8)
     void updateProduct() throws Exception {
-        ProductModel productModel = DataFactory.Product.productModelV2(productExpected.getId());
+        Product productModel = DataFactory.Product.productModelV2(productExpected.getId());
         TestLogger.info("Model for operation: " + productModel);
         String modelJson = JsonFactory.convertToJson(productModel);
         TestLogger.info("Json for operation: " + modelJson);
@@ -129,7 +129,7 @@ class ProductControllerTest extends ControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        ProductModel productActual = JsonFactory.convertToObject(result, ProductModel.class);
+        Product productActual = JsonFactory.convertToObject(result, Product.class);
         assertEquals(productExpected.getId(), productActual.getId());
         assertEquals(productExpected.getName(), productActual.getName());
         assertEquals(productExpected.getCategory(), productActual.getCategory());

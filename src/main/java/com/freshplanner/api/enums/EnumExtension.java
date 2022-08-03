@@ -1,4 +1,4 @@
-package com.freshplanner.api.service.enums;
+package com.freshplanner.api.enums;
 
 import java.util.Optional;
 import java.util.stream.Stream;

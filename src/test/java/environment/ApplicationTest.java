@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import utility.DataFactory;
 import utility.TestLogger;
 
-import static com.freshplanner.api.service.enums.RoleName.ROLE_ADMIN;
+import static com.freshplanner.api.enums.RoleName.ROLE_ADMIN;
 import static utility.AssertionUtils.assertEquals;
 
 /**

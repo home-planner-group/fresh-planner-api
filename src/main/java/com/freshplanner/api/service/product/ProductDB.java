@@ -1,7 +1,7 @@
 package com.freshplanner.api.service.product;
 
+import com.freshplanner.api.controller.model.Product;
 import com.freshplanner.api.exception.ElementNotFoundException;
-import com.freshplanner.api.model.product.ProductModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class ProductDB {
+public class ProductDB implements ProductService {
 
     private final ProductRepo productRepo;
 
@@ -28,12 +28,13 @@ public class ProductDB {
      * @return result object
      * @throws ElementNotFoundException if id does not exist
      */
-    public Product selectProductById(Integer productId) throws ElementNotFoundException {
-        Optional<Product> product = productRepo.findById(productId);
+    @Override
+    public ProductEntity selectProductById(Integer productId) throws ElementNotFoundException {
+        Optional<ProductEntity> product = productRepo.findById(productId);
         if (product.isPresent()) {
             return product.get();
         } else {
-            throw new ElementNotFoundException(Product.class, productId.toString());
+            throw new ElementNotFoundException(ProductEntity.class, productId.toString());
         }
     }
 
@@ -43,7 +44,7 @@ public class ProductDB {
      * @param productName partial name
      * @return list with result objects
      */
-    public List<Product> selectProductsByName(String productName) {
+    public List<ProductEntity> selectProductsByName(String productName) {
         return productRepo.searchByName(productName);
     }
 
@@ -53,7 +54,7 @@ public class ProductDB {
      * @param productCategory partial name
      * @return list with result objects
      */
-    public List<Product> selectProductsByCategory(String productCategory) {
+    public List<ProductEntity> selectProductsByCategory(String productCategory) {
         return productRepo.searchByCategory(productCategory);
     }
 
@@ -62,7 +63,7 @@ public class ProductDB {
      *
      * @return list with all objects
      */
-    public List<Product> selectAllProducts() {
+    public List<ProductEntity> selectAllProducts() {
         return productRepo.findAll();
     }
 
@@ -84,8 +85,8 @@ public class ProductDB {
      * @return created object
      */
     @Transactional
-    public Product insertProduct(ProductModel productModel) {
-        return productRepo.save(new Product(productModel));
+    public ProductEntity insertProduct(Product productModel) {
+        return productRepo.save(new ProductEntity(productModel));
     }
 
 
@@ -99,8 +100,8 @@ public class ProductDB {
      * @throws ElementNotFoundException if id does not exist
      */
     @Transactional
-    public Product updateProduct(ProductModel productModel) throws ElementNotFoundException {
-        Product product = this.selectProductById(productModel.getId());
+    public ProductEntity updateProduct(Product productModel) throws ElementNotFoundException {
+        ProductEntity product = this.selectProductById(productModel.getId());
         return productRepo.save(product.update(productModel));
     }
 
@@ -113,8 +114,8 @@ public class ProductDB {
      * @return deleted object
      * @throws ElementNotFoundException if id does not exist
      */
-    public Product deleteProductById(Integer productId) throws ElementNotFoundException {
-        Product product = this.selectProductById(productId);
+    public ProductEntity deleteProductById(Integer productId) throws ElementNotFoundException {
+        ProductEntity product = this.selectProductById(productId);
         productRepo.delete(product);
         return product;
     }

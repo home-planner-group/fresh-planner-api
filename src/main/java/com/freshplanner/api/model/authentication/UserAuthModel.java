@@ -1,6 +1,6 @@
 package com.freshplanner.api.model.authentication;
 
-import com.freshplanner.api.service.enums.RoleName;
+import com.freshplanner.api.enums.RoleName;
 import com.freshplanner.api.service.user.Role;
 import com.freshplanner.api.service.user.User;
 import io.swagger.annotations.ApiModel;
