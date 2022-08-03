@@ -2,15 +2,14 @@ package com.freshplanner.api.service.product;
 
 import com.freshplanner.api.controller.model.Product;
 import com.freshplanner.api.enums.Unit;
-import lombok.*;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
 @NoArgsConstructor
-@Getter
-@Setter
 @ToString
 @Entity(name = "Product")
 @Table(name = "products")
@@ -18,8 +17,7 @@ public class ProductEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    @Setter(AccessLevel.NONE)
+    @Column(name = "id", nullable = false, unique = true)
     private Integer id;
 
     @Column(name = "name", nullable = false, unique = true)
@@ -29,7 +27,7 @@ public class ProductEntity implements Serializable {
     private String category;
 
     @Enumerated(EnumType.ORDINAL)
-    @Column(name = "unit")
+    @Column(name = "unit", nullable = false)
     private Unit unit;
 
     @Column(name = "package_size")
@@ -48,7 +46,7 @@ public class ProductEntity implements Serializable {
     private Float fat;
 
     public ProductEntity(Product product) {
-        // id gets generated
+        this.id = null; // id gets generated
         this.name = product.getName();
         this.category = product.getCategory();
         this.unit = product.getUnit();
@@ -59,11 +57,22 @@ public class ProductEntity implements Serializable {
         this.fat = product.getFat();
     }
 
-    public Product getModel() {
-        return new Product(this);
+    public Product mapToModel() {
+        Product product = new Product();
+        product.setId(id);
+        product.setName(name);
+        product.setCategory(category);
+        product.setUnit(unit);
+        product.setPackageSize(packageSize);
+        product.setKcal(kcal);
+        product.setCarbohydrates(carbohydrates);
+        product.setProtein(protein);
+        product.setFat(fat);
+        return product;
     }
 
     public ProductEntity update(Product model) {
+        // ignore id changes
         if (model.getName() != null) {
             this.name = model.getName();
         }
@@ -81,6 +90,26 @@ public class ProductEntity implements Serializable {
         this.protein = model.getProtein();
         this.fat = model.getFat();
         return this;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public Unit getUnit() {
+        return unit;
+    }
+
+    public Float getPackageSize() {
+        return packageSize;
     }
 
     public Float getKcal() {

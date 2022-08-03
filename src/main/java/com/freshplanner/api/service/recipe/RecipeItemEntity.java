@@ -14,8 +14,8 @@ import java.util.Objects;
 @NoArgsConstructor
 @Entity(name = "RecipeItem")
 @Table(name = "recipe_items")
-@IdClass(RecipeItem.Key.class)
-public class RecipeItem implements Serializable {
+@IdClass(RecipeItemEntity.Key.class)
+public class RecipeItemEntity implements Serializable {
 
     @Id
     @ManyToOne
@@ -33,14 +33,25 @@ public class RecipeItem implements Serializable {
     @Column(name = "description")
     private String description;
 
-    public RecipeItem(RecipeEntity recipe, ProductEntity product, Float count, String description) {
+    public RecipeItemEntity(RecipeEntity recipe, ProductEntity product, Float count, String description) {
         this.recipe = recipe;
         this.product = product;
         this.count = (count != null && count >= 0) ? count : 0f;
         this.description = description;
     }
 
-    public RecipeItem update(Recipe.Item item) {
+    public Recipe.Item mapToModel() {
+        Recipe.Item item = new Recipe.Item();
+        item.setProductId(product.getId());
+        item.setProductName(product.getName());
+        item.setCount(count);
+        item.setUnit(product.getUnit());
+        item.setDescription(description);
+        return item;
+    }
+
+    public RecipeItemEntity update(Recipe.Item item) {
+        // ignore recipe and product changes
         this.count = (item.getCount() != null && item.getCount() >= 0) ? item.getCount() : 0f;
         this.description = item.getDescription();
         return this;
@@ -48,10 +59,6 @@ public class RecipeItem implements Serializable {
 
     public Integer getProductId() {
         return product.getId();
-    }
-
-    public String getProductName() {
-        return product.getName();
     }
 
     public Float getCount() {
@@ -97,7 +104,7 @@ public class RecipeItem implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        RecipeItem that = (RecipeItem) o;
+        RecipeItemEntity that = (RecipeItemEntity) o;
 
         if (!Objects.equals(recipe, that.recipe)) return false;
         return Objects.equals(product, that.product);

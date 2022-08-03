@@ -4,6 +4,7 @@ import com.freshplanner.api.controller.model.Product;
 import com.freshplanner.api.enums.Unit;
 import com.freshplanner.api.exception.ElementNotFoundException;
 import com.freshplanner.api.service.product.ProductDB;
+import com.freshplanner.api.service.product.ProductEntity;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class ProductController {
     @PostMapping(path = "/insert", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Product> addProduct(@RequestBody Product productModel) {
 
-        return ResponseEntity.ok(productDB.insertProduct(productModel).getModel());
+        return ResponseEntity.ok(productDB.insertProduct(productModel).mapToModel());
     }
 
     // === GET =========================================================================================================
@@ -44,7 +45,7 @@ public class ProductController {
 
         return ResponseEntity.ok(
                 productDB.selectAllProducts()
-                        .stream().map(Product::new).collect(Collectors.toList()));
+                        .stream().map(ProductEntity::mapToModel).collect(Collectors.toList()));
     }
 
     @ApiOperation("Get product by database ID.")
@@ -52,7 +53,7 @@ public class ProductController {
     public ResponseEntity<Product> getProductById(@ApiParam(value = "product db id", example = "1")
                                                   @PathVariable Integer productId) throws ElementNotFoundException {
 
-        return ResponseEntity.ok(productDB.selectProductById(productId).getModel());
+        return ResponseEntity.ok(productDB.selectProductById(productId).mapToModel());
     }
 
     @ApiOperation("Search products by contained name.")
@@ -62,7 +63,7 @@ public class ProductController {
 
         return ResponseEntity.ok(
                 productDB.selectProductsByName(productName)
-                        .stream().map(Product::new).collect(Collectors.toList()));
+                        .stream().map(ProductEntity::mapToModel).collect(Collectors.toList()));
     }
 
     @ApiOperation("Search products by contained category.")
@@ -72,7 +73,7 @@ public class ProductController {
 
         return ResponseEntity.ok(
                 productDB.selectProductsByCategory(productCategory)
-                        .stream().map(Product::new).collect(Collectors.toList()));
+                        .stream().map(ProductEntity::mapToModel).collect(Collectors.toList()));
     }
 
     @ApiOperation("Get all existing product categories.")
@@ -95,7 +96,7 @@ public class ProductController {
     @PutMapping(path = "/update", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Product> updateProduct(@RequestBody Product productModel) throws ElementNotFoundException {
 
-        return ResponseEntity.ok(productDB.updateProduct(productModel).getModel());
+        return ResponseEntity.ok(productDB.updateProduct(productModel).mapToModel());
     }
 
     // === DELETE ======================================================================================================
@@ -106,6 +107,6 @@ public class ProductController {
     public ResponseEntity<Product> deleteProduct(@ApiParam(value = "product db id", example = "1")
                                                  @PathVariable Integer productId) throws ElementNotFoundException {
 
-        return ResponseEntity.ok(productDB.deleteProductById(productId).getModel());
+        return ResponseEntity.ok(productDB.deleteProductById(productId).mapToModel());
     }
 }

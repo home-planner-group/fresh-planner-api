@@ -65,7 +65,7 @@ class RecipeDBTest extends ApplicationTest {
         TestLogger.info("Model for operation: " + recipeItemModel);
 
         RecipeEntity recipeActual = recipeDB.insertRecipeItem(recipeExpected.getId(), recipeItemModel);
-        assertContains(recipeActual.getRecipeItems().stream().map(RecipeItem::getProductId).collect(Collectors.toSet()), productExpected.getId());
+        assertContains(recipeActual.getRecipeItems().stream().map(RecipeItemEntity::getProductId).collect(Collectors.toSet()), productExpected.getId());
 
         recipeExpected = recipeActual;
         TestLogger.info("Updated recipe: " + recipeExpected);
@@ -130,7 +130,7 @@ class RecipeDBTest extends ApplicationTest {
         Recipe.Item itemModel = DataFactory.Recipe.recipeItemV2(productExpected.getId());
         TestLogger.info("Model for operation: " + itemModel);
 
-        RecipeItem recipeItem = recipeDB.updateRecipeItem(recipeExpected.getId(), itemModel);
+        RecipeItemEntity recipeItem = recipeDB.updateRecipeItem(recipeExpected.getId(), itemModel);
         assertEquals(itemModel.getCount(), recipeItem.getCount());
         assertEquals(itemModel.getDescription(), recipeItem.getDescription());
         TestLogger.info("Updated recipe: " + recipeItem);
@@ -147,7 +147,7 @@ class RecipeDBTest extends ApplicationTest {
     @Order(10)
     void deleteRecipeItemById() throws ElementNotFoundException {
         RecipeEntity recipeActual = recipeDB.deleteRecipeItemById(recipeExpected.getId(), productExpected.getId());
-        assertNotContains(recipeActual.getRecipeItems().stream().map(RecipeItem::getProductId).collect(Collectors.toSet()), productExpected.getId());
+        assertNotContains(recipeActual.getRecipeItems().stream().map(RecipeItemEntity::getProductId).collect(Collectors.toSet()), productExpected.getId());
 
         recipeExpected = recipeActual;
         TestLogger.info("Updated recipe: " + recipeExpected);
@@ -173,7 +173,7 @@ class RecipeDBTest extends ApplicationTest {
         assertThrows(ElementNotFoundException.class,
                 () -> recipeDB.insertRecipeItem(recipeExpected.getId(), new Recipe.Item()));
         assertThrows(ElementNotFoundException.class,
-                () -> recipeDB.updateRecipe(new Recipe(recipeExpected)));
+                () -> recipeDB.updateRecipe(recipeExpected.mapToModel()));
         assertThrows(ElementNotFoundException.class,
                 () -> recipeDB.updateRecipeItem(recipeExpected.getId(), new Recipe.Item()));
         assertThrows(ElementNotFoundException.class,

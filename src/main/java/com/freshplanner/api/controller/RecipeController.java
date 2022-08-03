@@ -33,7 +33,7 @@ public class RecipeController {
     @PostMapping(path = "/insert", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Recipe> addRecipe(@RequestBody Recipe recipeModel) throws ElementNotFoundException {
 
-        return ResponseEntity.ok(recipeDB.insertRecipe(recipeModel).toModel());
+        return ResponseEntity.ok(recipeDB.insertRecipe(recipeModel).mapToModel());
     }
 
     @ApiOperation("Insert a new recipe item into the database.")
@@ -42,7 +42,7 @@ public class RecipeController {
                                                 @PathVariable Integer recipeId,
                                                 @RequestBody Recipe.Item recipeItemModel) throws ElementNotFoundException {
 
-        return ResponseEntity.ok(recipeDB.insertRecipeItem(recipeId, recipeItemModel).toModel());
+        return ResponseEntity.ok(recipeDB.insertRecipeItem(recipeId, recipeItemModel).mapToModel());
     }
 
     // === GET =========================================================================================================
@@ -53,7 +53,7 @@ public class RecipeController {
 
         return ResponseEntity.ok(
                 recipeDB.selectAllRecipes()
-                        .stream().map(Recipe::new).collect(Collectors.toList()));
+                        .stream().map(RecipeEntity::mapToModel).collect(Collectors.toList()));
     }
 
     @ApiOperation("Get recipe by database ID.")
@@ -61,7 +61,7 @@ public class RecipeController {
     public ResponseEntity<Recipe> getRecipeById(@ApiParam(value = "recipe db id", example = "1")
                                                 @PathVariable Integer recipeId) throws ElementNotFoundException {
 
-        return ResponseEntity.ok(recipeDB.selectRecipeById(recipeId).toModel());
+        return ResponseEntity.ok(recipeDB.selectRecipeById(recipeId).mapToModel());
     }
 
     @ApiOperation("Search recipes by contained name.")
@@ -71,7 +71,7 @@ public class RecipeController {
 
         return ResponseEntity.ok(
                 recipeDB.selectRecipesByName(recipeName)
-                        .stream().map(Recipe::new).collect(Collectors.toList()));
+                        .stream().map(RecipeEntity::mapToModel).collect(Collectors.toList()));
     }
 
     @ApiOperation("Search recipes by contained category.")
@@ -81,7 +81,7 @@ public class RecipeController {
 
         return ResponseEntity.ok(
                 recipeDB.selectRecipesByCategory(recipeCategory)
-                        .stream().map(RecipeEntity::toModel).collect(Collectors.toList()));
+                        .stream().map(RecipeEntity::mapToModel).collect(Collectors.toList()));
     }
 
     @ApiOperation("Get all existing recipe categories.")
@@ -99,15 +99,14 @@ public class RecipeController {
                                                         @PathVariable Integer recipeId,
                                                         @RequestBody Recipe.Item itemModel) throws ElementNotFoundException {
 
-        return ResponseEntity.ok(new Recipe.Item(
-                recipeDB.updateRecipeItem(recipeId, itemModel)));
+        return ResponseEntity.ok(recipeDB.updateRecipeItem(recipeId, itemModel).mapToModel());
     }
 
     @ApiOperation("Update recipe in the database.")
     @PutMapping(path = "/update", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Recipe> updateRecipe(@RequestBody Recipe recipeModel) throws ElementNotFoundException {
 
-        return ResponseEntity.ok(recipeDB.updateRecipe(recipeModel).toModel());
+        return ResponseEntity.ok(recipeDB.updateRecipe(recipeModel).mapToModel());
     }
 
 
@@ -121,7 +120,7 @@ public class RecipeController {
                                                    @ApiParam(value = "product db id", example = "1")
                                                    @PathVariable Integer productId) throws ElementNotFoundException {
 
-        return ResponseEntity.ok(recipeDB.deleteRecipeItemById(recipeId, productId).toModel());
+        return ResponseEntity.ok(recipeDB.deleteRecipeItemById(recipeId, productId).mapToModel());
     }
 
     @PreAuthorize("hasRole('EDITOR') or hasRole('ADMIN')")
@@ -130,6 +129,6 @@ public class RecipeController {
     public ResponseEntity<Recipe> deleteRecipe(@ApiParam(value = "recipe db id", example = "1")
                                                @PathVariable Integer recipeId) throws ElementNotFoundException {
 
-        return ResponseEntity.ok(recipeDB.deleteRecipeById(recipeId).toModel());
+        return ResponseEntity.ok(recipeDB.deleteRecipeById(recipeId).mapToModel());
     }
 }

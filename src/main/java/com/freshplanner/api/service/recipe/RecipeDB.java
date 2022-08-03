@@ -42,13 +42,13 @@ public class RecipeDB {
         }
     }
 
-    private RecipeItem selectRecipeItemById(Integer recipeId, Integer productId) throws ElementNotFoundException {
-        RecipeItem.Key id = new RecipeItem.Key(recipeId, productId);
-        Optional<RecipeItem> item = recipeItemRepo.findById(id);
+    private RecipeItemEntity selectRecipeItemById(Integer recipeId, Integer productId) throws ElementNotFoundException {
+        RecipeItemEntity.Key id = new RecipeItemEntity.Key(recipeId, productId);
+        Optional<RecipeItemEntity> item = recipeItemRepo.findById(id);
         if (item.isPresent()) {
             return item.get();
         } else {
-            throw new ElementNotFoundException(RecipeItem.class, id.toString());
+            throw new ElementNotFoundException(RecipeItemEntity.class, id.toString());
         }
     }
 
@@ -123,8 +123,8 @@ public class RecipeDB {
         return recipe;
     }
 
-    private RecipeItem insertRecipeItem(RecipeEntity recipe, Recipe.Item recipeItemModel) throws ElementNotFoundException {
-        return recipeItemRepo.save(new RecipeItem(
+    private RecipeItemEntity insertRecipeItem(RecipeEntity recipe, Recipe.Item recipeItemModel) throws ElementNotFoundException {
+        return recipeItemRepo.save(new RecipeItemEntity(
                 recipe,
                 productService.selectProductById(recipeItemModel.getProductId()),
                 recipeItemModel.getCount(),
@@ -155,8 +155,8 @@ public class RecipeDB {
      * @throws ElementNotFoundException if id does not exist
      */
     @Transactional
-    public RecipeItem updateRecipeItem(int recipeId, Recipe.Item itemModel) throws ElementNotFoundException {
-        RecipeItem recipeItem = this.selectRecipeItemById(recipeId, itemModel.getProductId());
+    public RecipeItemEntity updateRecipeItem(int recipeId, Recipe.Item itemModel) throws ElementNotFoundException {
+        RecipeItemEntity recipeItem = this.selectRecipeItemById(recipeId, itemModel.getProductId());
         return recipeItemRepo.save(recipeItem.update(itemModel));
     }
 
@@ -171,7 +171,7 @@ public class RecipeDB {
      * @throws ElementNotFoundException if id does not exist
      */
     public RecipeEntity deleteRecipeItemById(Integer recipeId, Integer productId) throws ElementNotFoundException {
-        RecipeItem item = this.selectRecipeItemById(recipeId, productId);
+        RecipeItemEntity item = this.selectRecipeItemById(recipeId, productId);
         recipeItemRepo.delete(item);
         RecipeEntity recipe = selectRecipeById(recipeId);
         recipe.getRecipeItems().remove(item);

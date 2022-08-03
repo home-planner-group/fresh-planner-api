@@ -1,8 +1,6 @@
 package com.freshplanner.api.controller.model;
 
 import com.freshplanner.api.enums.Unit;
-import com.freshplanner.api.service.recipe.RecipeEntity;
-import com.freshplanner.api.service.recipe.RecipeItem;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -10,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @ApiModel
@@ -36,28 +33,8 @@ public class Recipe {
     private Float protein;
     @ApiModelProperty(value = "Fat per 100g", example = "10")
     private Float fat;
-    private List<Item> items;
 
-    public Recipe(RecipeEntity entity) {
-        this.id = entity.getId();
-        this.name = entity.getName();
-        this.category = entity.getCategory();
-        this.duration = entity.getDuration();
-        this.description = entity.getDescription();
-        this.items = entity.getRecipeItems().stream().map(Item::new).collect(Collectors.toList());
-        if (entity.getRecipeItems().size() > 0) {
-            this.kcal = 0f;
-            this.carbohydrates = 0f;
-            this.protein = 0f;
-            this.fat = 0f;
-            for (RecipeItem item : entity.getRecipeItems()) {
-                this.kcal += item.getKcal();
-                this.carbohydrates += item.getCarbohydrates();
-                this.protein += item.getProtein();
-                this.fat += item.getFat();
-            }
-        }
-    }
+    private List<Item> items;
 
     @Data
     @ApiModel
@@ -75,13 +52,5 @@ public class Recipe {
         private Unit unit;
         @ApiModelProperty(value = "Item description", example = "small")
         private String description;
-
-        public Item(RecipeItem item) {
-            this.productId = item.getProductId();
-            this.productName = item.getProductName();
-            this.count = item.getCount();
-            this.unit = item.getUnit();
-            this.description = item.getDescription();
-        }
     }
 }

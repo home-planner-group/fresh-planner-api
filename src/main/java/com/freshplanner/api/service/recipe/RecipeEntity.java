@@ -1,31 +1,25 @@
 package com.freshplanner.api.service.recipe;
 
 import com.freshplanner.api.controller.model.Recipe;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @NoArgsConstructor
 @Getter
-@Setter
 @Entity(name = "Recipe")
 @Table(name = "recipes")
 public class RecipeEntity implements Serializable {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "recipe", orphanRemoval = true)
-    private final Set<RecipeItem> recipeItems = new HashSet<>();
+    private final Set<RecipeItemEntity> recipeItems = new HashSet<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    @Setter(AccessLevel.NONE)
     private Integer id;
 
     @Column(name = "name", nullable = false, unique = true)
@@ -41,18 +35,43 @@ public class RecipeEntity implements Serializable {
     private Integer duration;
 
     public RecipeEntity(Recipe recipe) {
-        // id gets generated
+        this.id = null; // id gets generated
         this.name = recipe.getName();
         this.category = recipe.getCategory();
         this.duration = recipe.getDuration();
         this.description = recipe.getDescription();
     }
 
-    public Recipe toModel() {
-        return new Recipe(this);
+    public Recipe mapToModel() {
+        Recipe recipe = new Recipe();
+        recipe.setId(id);
+        recipe.setName(name);
+        recipe.setCategory(category);
+        recipe.setDuration(duration);
+        recipe.setDescription(description);
+        float kcal = 0f;
+        float carbohydrates = 0f;
+        float protein = 0f;
+        float fat = 0f;
+        List<Recipe.Item> items = new ArrayList<>();
+        for (RecipeItemEntity item : recipeItems) {
+            kcal += item.getKcal();
+            carbohydrates += item.getCarbohydrates();
+            protein += item.getProtein();
+            fat += item.getFat();
+            items.add(item.mapToModel());
+        }
+        recipe.setKcal(kcal);
+        recipe.setCarbohydrates(carbohydrates);
+        recipe.setProtein(protein);
+        recipe.setFat(fat);
+        recipe.setItems(items);
+        return recipe;
+
     }
 
     public RecipeEntity update(Recipe model) {
+        // ignore id changes
         if (model.getName() != null) {
             this.name = model.getName();
         }
