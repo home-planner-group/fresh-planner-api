@@ -1,9 +1,9 @@
 package environment;
 
 import com.freshplanner.api.Application;
-import com.freshplanner.api.database.user.UserDB;
-import com.freshplanner.api.model.authentication.RegistrationModel;
-import com.freshplanner.api.model.authentication.UserAuthModel;
+import com.freshplanner.api.controller.model.authentication.AuthModel;
+import com.freshplanner.api.controller.model.authentication.RegistrationModel;
+import com.freshplanner.api.service.user.UserDB;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,7 +17,7 @@ import utility.DataFactory;
 import utility.JsonFactory;
 import utility.TestLogger;
 
-import static com.freshplanner.api.database.enums.RoleName.ROLE_ADMIN;
+import static com.freshplanner.api.enums.RoleName.ROLE_ADMIN;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -37,7 +37,7 @@ public abstract class ControllerTest {
 
     @Autowired
     protected MockMvc mockMvc;
-    protected UserAuthModel userAuth;
+    protected AuthModel userAuth;
     @Autowired
     private UserDB userDB;
 
@@ -57,7 +57,7 @@ public abstract class ControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        UserAuthModel userAuthActual = JsonFactory.convertToObject(result, UserAuthModel.class);
+        AuthModel userAuthActual = JsonFactory.convertToObject(result, AuthModel.class);
         assertNotNull(userAuthActual);
         assertNotNull(userAuthActual.getJwt());
 

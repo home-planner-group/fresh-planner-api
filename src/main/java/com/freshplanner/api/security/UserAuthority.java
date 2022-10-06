@@ -1,7 +1,7 @@
 package com.freshplanner.api.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.freshplanner.api.database.user.User;
+import com.freshplanner.api.service.user.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 /**
  * <h2>Implementation of {@link UserDetails}</h2>
- * <p>Uses {@link User} and adds the {@link GrantedAuthority} information.</p>
+ * <p>Uses {@link UserEntity} and adds the {@link GrantedAuthority} information.</p>
  */
 public class UserAuthority implements UserDetails {
 
@@ -20,7 +20,7 @@ public class UserAuthority implements UserDetails {
     private final String password;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    private UserAuthority(User user) {
+    private UserAuthority(UserEntity user) {
         this.username = user.getName();
         this.password = user.getPassword();
         this.authorities = user.getRoles().stream()
@@ -28,10 +28,10 @@ public class UserAuthority implements UserDetails {
     }
 
     /**
-     * @param user all information of the {@link User} will be used and from  {@link User#getRoles()} the 'authorities' will be built.
+     * @param user all information of the {@link UserEntity} will be used and from  {@link UserEntity#getRoles()} the 'authorities' will be built.
      * @return new instance of {@link UserAuthority}.
      */
-    public static UserAuthority build(User user) {
+    public static UserAuthority build(UserEntity user) {
         return new UserAuthority(user);
     }
 

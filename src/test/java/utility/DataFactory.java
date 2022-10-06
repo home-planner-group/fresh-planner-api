@@ -1,9 +1,7 @@
 package utility;
 
-import com.freshplanner.api.database.enums.Unit;
-import com.freshplanner.api.model.authentication.RegistrationModel;
-import com.freshplanner.api.model.product.ProductModel;
-import com.freshplanner.api.model.recipe.RecipeModel;
+import com.freshplanner.api.controller.model.authentication.RegistrationModel;
+import com.freshplanner.api.enums.Unit;
 
 import java.util.ArrayList;
 
@@ -21,8 +19,8 @@ public class DataFactory {
     }
 
     public static class Product {
-        public static ProductModel productModelV1(Integer id) {
-            return new ProductModel(
+        public static com.freshplanner.api.controller.model.Product productModelV1(Integer id) {
+            return new com.freshplanner.api.controller.model.Product(
                     id,
                     "TestProduct",
                     "TestCategory",
@@ -34,9 +32,9 @@ public class DataFactory {
                     30f);
         }
 
-        public static ProductModel productModelV2(Integer id) {
-            ProductModel modelV1 = productModelV1(id);
-            return new ProductModel(
+        public static com.freshplanner.api.controller.model.Product productModelV2(Integer id) {
+            com.freshplanner.api.controller.model.Product modelV1 = productModelV1(id);
+            return new com.freshplanner.api.controller.model.Product(
                     id,
                     modelV1.getName(),
                     modelV1.getCategory(),
@@ -50,8 +48,8 @@ public class DataFactory {
     }
 
     public static class Recipe {
-        public static RecipeModel recipeModelV1(Integer id) {
-            return new RecipeModel(
+        public static com.freshplanner.api.controller.model.Recipe recipeModelV1(Integer id) {
+            return new com.freshplanner.api.controller.model.Recipe(
                     id,
                     "TestRecipe",
                     "TestCategory",
@@ -65,8 +63,8 @@ public class DataFactory {
             );
         }
 
-        public static RecipeModel recipeModelV2(Integer id) {
-            return new RecipeModel(
+        public static com.freshplanner.api.controller.model.Recipe recipeModelV2(Integer id) {
+            return new com.freshplanner.api.controller.model.Recipe(
                     id,
                     "TestRecipeEdited",
                     "TestCategoryEdited",
@@ -80,8 +78,8 @@ public class DataFactory {
             );
         }
 
-        public static RecipeModel.Item recipeItemV1(Integer productId) {
-            return new RecipeModel.Item(
+        public static com.freshplanner.api.controller.model.Recipe.Item recipeItemV1(Integer productId) {
+            return new com.freshplanner.api.controller.model.Recipe.Item(
                     productId,
                     "Placeholder",
                     1f,
@@ -90,8 +88,8 @@ public class DataFactory {
             );
         }
 
-        public static RecipeModel.Item recipeItemV2(Integer productId) {
-            return new RecipeModel.Item(
+        public static com.freshplanner.api.controller.model.Recipe.Item recipeItemV2(Integer productId) {
+            return new com.freshplanner.api.controller.model.Recipe.Item(
                     productId,
                     "Placeholder",
                     2f,

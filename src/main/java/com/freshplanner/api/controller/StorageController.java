@@ -1,11 +1,11 @@
 package com.freshplanner.api.controller;
 
-import com.freshplanner.api.database.storage.StorageDB;
+import com.freshplanner.api.controller.model.Storage;
 import com.freshplanner.api.exception.ElementNotFoundException;
 import com.freshplanner.api.exception.NoAccessException;
-import com.freshplanner.api.model.storage.StorageModel;
-import com.freshplanner.api.model.storage.StorageSummaryModel;
 import com.freshplanner.api.security.SecurityContext;
+import com.freshplanner.api.service.storage.StorageDB;
+import com.freshplanner.api.service.storage.StorageEntity;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,23 +34,21 @@ public class StorageController {
     @PreAuthorize("hasRole('USER') or hasRole('EDITOR') or hasRole('ADMIN')")
     @ApiOperation("Insert a new storage for the user.")
     @PostMapping(path = "/insert", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StorageModel> addStorage(@RequestBody StorageSummaryModel storageModel) throws ElementNotFoundException {
+    public ResponseEntity<Storage> addStorage(@RequestBody Storage storageModel) throws ElementNotFoundException {
         String username = SecurityContext.extractUsername();
 
-        return ResponseEntity.ok(new StorageModel(
-                storageDB.insertStorage(username, storageModel)));
+        return ResponseEntity.ok(storageDB.insertStorage(username, storageModel).mapToModel());
     }
 
     @PreAuthorize("hasRole('USER') or hasRole('EDITOR') or hasRole('ADMIN')")
-    @ApiOperation("Insert a new storage item into the database. User validation for storage ownership.")
+    @ApiOperation("Insert a new storage item into the database. UserEntity validation for storage ownership.")
     @PostMapping(path = "/insert-item/{storageId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StorageModel> addStorageItem(@ApiParam(value = "storage db id", example = "1")
-                                                       @PathVariable Integer storageId,
-                                                       @RequestBody StorageModel.Item item) throws ElementNotFoundException, NoAccessException {
+    public ResponseEntity<Storage> addStorageItem(@ApiParam(value = "storage db id", example = "1")
+                                                  @PathVariable Integer storageId,
+                                                  @RequestBody Storage.Item item) throws ElementNotFoundException, NoAccessException {
         String username = SecurityContext.extractUsername();
 
-        return ResponseEntity.ok(new StorageModel(
-                storageDB.insertStorageItem(username, storageId, item)));
+        return ResponseEntity.ok(storageDB.insertStorageItem(username, storageId, item).mapToModel());
     }
 
     // === GET =========================================================================================================
@@ -58,98 +56,91 @@ public class StorageController {
     @PreAuthorize("hasRole('USER') or hasRole('EDITOR') or hasRole('ADMIN')")
     @ApiOperation("Get all storages from the user.")
     @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<StorageSummaryModel>> getUserStorages() {
+    public ResponseEntity<List<Storage>> getUserStorages() {
         String username = SecurityContext.extractUsername();
 
         return ResponseEntity.ok(
                 storageDB.selectUserStorages(username)
-                        .stream().map(StorageSummaryModel::new).collect(Collectors.toList()));
+                        .stream().map(StorageEntity::mapToModel).collect(Collectors.toList()));
     }
 
     @PreAuthorize("hasRole('USER') or hasRole('EDITOR') or hasRole('ADMIN')")
-    @ApiOperation("Get storage by database ID. User validation for storage ownership.")
+    @ApiOperation("Get storage by database ID. UserEntity validation for storage ownership.")
     @GetMapping(path = "/get/{storageId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StorageModel> getStorageById(@ApiParam(value = "storage db id", example = "1")
-                                                       @PathVariable Integer storageId) throws ElementNotFoundException, NoAccessException {
+    public ResponseEntity<Storage> getStorageById(@ApiParam(value = "storage db id", example = "1")
+                                                  @PathVariable Integer storageId) throws ElementNotFoundException, NoAccessException {
         String username = SecurityContext.extractUsername();
 
-        return ResponseEntity.ok(new StorageModel(
-                storageDB.selectStorageById(username, storageId)));
+        return ResponseEntity.ok(storageDB.selectStorageById(username, storageId).mapToModel());
     }
 
     // === PUT =========================================================================================================
 
     @PreAuthorize("hasRole('USER') or hasRole('EDITOR') or hasRole('ADMIN')")
-    @ApiOperation("Update storage with additional user. User validation for storage ownership.")
+    @ApiOperation("Update storage with additional user. UserEntity validation for storage ownership.")
     @PutMapping(path = "/add-user/{storageId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StorageModel> addUser(@ApiParam(value = "storage db id", example = "1")
-                                                @PathVariable Integer storageId,
-                                                @ApiParam(value = "username", example = "Max")
-                                                @RequestParam String username) throws ElementNotFoundException, NoAccessException {
+    public ResponseEntity<Storage> addUser(@ApiParam(value = "storage db id", example = "1")
+                                           @PathVariable Integer storageId,
+                                           @ApiParam(value = "username", example = "Max")
+                                           @RequestParam String username) throws ElementNotFoundException, NoAccessException {
         String usernameOwner = SecurityContext.extractUsername();
 
-        return ResponseEntity.ok(new StorageModel(
-                storageDB.updateAddUser(usernameOwner, storageId, username)));
+        return ResponseEntity.ok(storageDB.updateAddUser(usernameOwner, storageId, username).mapToModel());
     }
 
     @PreAuthorize("hasRole('USER') or hasRole('EDITOR') or hasRole('ADMIN')")
-    @ApiOperation("Update storage by removing user. User validation for storage ownership.")
+    @ApiOperation("Update storage by removing user. UserEntity validation for storage ownership.")
     @PutMapping(path = "/remove-user/{storageId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StorageModel> removeUser(@ApiParam(value = "storage db id", example = "1")
-                                                   @PathVariable Integer storageId,
-                                                   @ApiParam(value = "username", example = "Max")
-                                                   @RequestParam String username) throws ElementNotFoundException, NoAccessException {
+    public ResponseEntity<Storage> removeUser(@ApiParam(value = "storage db id", example = "1")
+                                              @PathVariable Integer storageId,
+                                              @ApiParam(value = "username", example = "Max")
+                                              @RequestParam String username) throws ElementNotFoundException, NoAccessException {
         String usernameOwner = SecurityContext.extractUsername();
 
-        return ResponseEntity.ok(new StorageModel(
-                storageDB.updateRemoveUser(usernameOwner, storageId, username)));
+        return ResponseEntity.ok(storageDB.updateRemoveUser(usernameOwner, storageId, username).mapToModel());
     }
 
     @PreAuthorize("hasRole('USER') or hasRole('EDITOR') or hasRole('ADMIN')")
-    @ApiOperation("Update storage in the database. User validation for storage ownership.")
+    @ApiOperation("Update storage in the database. UserEntity validation for storage ownership.")
     @PutMapping(path = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StorageModel> updateStorage(@RequestBody StorageModel storageModel) throws ElementNotFoundException, NoAccessException {
+    public ResponseEntity<Storage> updateStorage(@RequestBody Storage storageModel) throws ElementNotFoundException, NoAccessException {
         String usernameOwner = SecurityContext.extractUsername();
 
-        return ResponseEntity.ok(new StorageModel(
-                storageDB.updateStorage(usernameOwner, storageModel)));
+        return ResponseEntity.ok(storageDB.updateStorage(usernameOwner, storageModel).mapToModel());
     }
 
     @PreAuthorize("hasRole('USER') or hasRole('EDITOR') or hasRole('ADMIN')")
-    @ApiOperation("Update storage item in the database. User validation for storage ownership.")
+    @ApiOperation("Update storage item in the database. UserEntity validation for storage ownership.")
     @PutMapping(path = "/update-item/{storageId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StorageModel.Item> updateStorageItem(@ApiParam(value = "storage db id", example = "1")
-                                                               @PathVariable Integer storageId,
-                                                               @RequestBody StorageModel.Item itemModel) throws ElementNotFoundException, NoAccessException {
+    public ResponseEntity<Storage.Item> updateStorageItem(@ApiParam(value = "storage db id", example = "1")
+                                                          @PathVariable Integer storageId,
+                                                          @RequestBody Storage.Item itemModel) throws ElementNotFoundException, NoAccessException {
         String username = SecurityContext.extractUsername();
 
-        return ResponseEntity.ok(new StorageModel.Item(
-                storageDB.updateStorageItem(username, storageId, itemModel)));
+        return ResponseEntity.ok(storageDB.updateStorageItem(username, storageId, itemModel).mapToModel());
     }
 
     // === DELETE ======================================================================================================
 
     @PreAuthorize("hasRole('USER') or hasRole('EDITOR') or hasRole('ADMIN')")
-    @ApiOperation("Delete storage item from the database by IDs. User validation for storage ownership.")
+    @ApiOperation("Delete storage item from the database by IDs. UserEntity validation for storage ownership.")
     @DeleteMapping(path = "/delete-item/{storageId}/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StorageModel> deleteStorageItem(@ApiParam(value = "storage db id", example = "1")
-                                                          @PathVariable Integer storageId,
-                                                          @ApiParam(value = "product db id", example = "1")
-                                                          @PathVariable Integer productId) throws ElementNotFoundException, NoAccessException {
+    public ResponseEntity<Storage> deleteStorageItem(@ApiParam(value = "storage db id", example = "1")
+                                                     @PathVariable Integer storageId,
+                                                     @ApiParam(value = "product db id", example = "1")
+                                                     @PathVariable Integer productId) throws ElementNotFoundException, NoAccessException {
         String username = SecurityContext.extractUsername();
 
-        return ResponseEntity.ok(new StorageModel(
-                storageDB.deleteStorageItem(username, storageId, productId)));
+        return ResponseEntity.ok(storageDB.deleteStorageItem(username, storageId, productId).mapToModel());
     }
 
     @PreAuthorize("hasRole('USER') or hasRole('EDITOR') or hasRole('ADMIN')")
-    @ApiOperation("Delete storage from the database by ID. User validation for storage ownership - Admin exception.")
+    @ApiOperation("Delete storage from the database by ID. UserEntity validation for storage ownership - Admin exception.")
     @DeleteMapping(path = "/delete/{storageId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StorageModel> deleteStorage(@ApiParam(value = "storage db id", example = "1")
-                                                      @PathVariable Integer storageId) throws ElementNotFoundException, NoAccessException {
+    public ResponseEntity<Storage> deleteStorage(@ApiParam(value = "storage db id", example = "1")
+                                                 @PathVariable Integer storageId) throws ElementNotFoundException, NoAccessException {
         String username = SecurityContext.extractUsername();
 
-        return ResponseEntity.ok(new StorageModel(
-                storageDB.deleteStorageById(username, storageId)));
+        return ResponseEntity.ok(storageDB.deleteStorageById(username, storageId).mapToModel());
     }
 }
