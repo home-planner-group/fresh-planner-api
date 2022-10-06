@@ -45,6 +45,8 @@ public class ProductEntity implements Serializable {
     @Column(name = "fat")
     private Float fat;
 
+    // === OBJECT CONSTRUCTION =========================================================================================
+
     public ProductEntity(Product product) {
         this.id = null; // id gets generated
         this.name = product.getName();
@@ -71,6 +73,8 @@ public class ProductEntity implements Serializable {
         return product;
     }
 
+    // === OBJECT CHANGES ==============================================================================================
+
     public ProductEntity update(Product model) {
         // ignore id changes
         if (model.getName() != null) {
@@ -91,6 +95,8 @@ public class ProductEntity implements Serializable {
         this.fat = model.getFat();
         return this;
     }
+
+    // === OBJECT ACCESS ===============================================================================================
 
     public Integer getId() {
         return id;
@@ -127,6 +133,8 @@ public class ProductEntity implements Serializable {
     public Float getFat() {
         return fat != null ? fat : 0;
     }
+
+    // === OBJECT DEFAULTS =============================================================================================
 
     @Override
     public boolean equals(Object o) {
