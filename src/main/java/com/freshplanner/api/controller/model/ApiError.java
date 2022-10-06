@@ -1,4 +1,4 @@
-package com.freshplanner.api.model.error;
+package com.freshplanner.api.controller.model;
 
 import lombok.Data;
 import org.springframework.http.HttpStatus;

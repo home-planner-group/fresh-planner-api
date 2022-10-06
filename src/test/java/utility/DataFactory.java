@@ -1,7 +1,7 @@
 package utility;
 
+import com.freshplanner.api.controller.model.authentication.RegistrationModel;
 import com.freshplanner.api.enums.Unit;
-import com.freshplanner.api.model.authentication.RegistrationModel;
 
 import java.util.ArrayList;
 

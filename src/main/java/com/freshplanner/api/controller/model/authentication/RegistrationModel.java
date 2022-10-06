@@ -1,4 +1,4 @@
-package com.freshplanner.api.model.authentication;
+package com.freshplanner.api.controller.model.authentication;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

@@ -4,8 +4,8 @@ import com.freshplanner.api.controller.model.Cart;
 import com.freshplanner.api.exception.ElementNotFoundException;
 import com.freshplanner.api.exception.NoAccessException;
 import com.freshplanner.api.service.product.ProductService;
-import com.freshplanner.api.service.user.User;
-import com.freshplanner.api.service.user.UserDB;
+import com.freshplanner.api.service.user.UserEntity;
+import com.freshplanner.api.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,14 +19,14 @@ public class CartDB {
     private final CartRepo cartRepo;
     private final CartItemRepo cartItemRepo;
     private final ProductService productService;
-    private final UserDB userDB;
+    private final UserService userService;
 
     @Autowired
-    public CartDB(CartRepo cartRepo, CartItemRepo cartItemRpo, ProductService productService, UserDB userDB) {
+    public CartDB(CartRepo cartRepo, CartItemRepo cartItemRpo, ProductService productService, UserService userService) {
         this.cartRepo = cartRepo;
         this.cartItemRepo = cartItemRpo;
         this.productService = productService;
-        this.userDB = userDB;
+        this.userService = userService;
     }
 
     // === SELECT ======================================================================================================
@@ -90,7 +90,7 @@ public class CartDB {
      */
     @Transactional
     public CartEntity insertCart(String username, Cart cartModel) throws ElementNotFoundException {
-        User user = userDB.getUserByName(username);
+        UserEntity user = userService.getUserByName(username);
         return cartRepo.save(new CartEntity(user, cartModel));
     }
 
@@ -130,7 +130,7 @@ public class CartDB {
     @Transactional
     public CartEntity updateAddUser(String usernameOwner, int cartId, String usernameMember) throws ElementNotFoundException, NoAccessException {
         CartEntity cart = selectCartById(usernameOwner, cartId);
-        User user = userDB.getUserByName(usernameMember);
+        UserEntity user = userService.getUserByName(usernameMember);
         return cartRepo.save(cart.addUser(user));
     }
 
@@ -147,7 +147,7 @@ public class CartDB {
     @Transactional
     public CartEntity updateRemoveUser(String usernameOwner, int cartId, String usernameMember) throws ElementNotFoundException, NoAccessException {
         CartEntity cart = selectCartById(usernameOwner, cartId);
-        User user = userDB.getUserByName(usernameMember);
+        UserEntity user = userService.getUserByName(usernameMember);
         return cartRepo.save(cart.removeUser(user));
     }
 

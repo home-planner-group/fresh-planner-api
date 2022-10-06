@@ -1,8 +1,8 @@
 package environment;
 
 import com.freshplanner.api.Application;
-import com.freshplanner.api.model.authentication.RegistrationModel;
-import com.freshplanner.api.model.authentication.UserAuthModel;
+import com.freshplanner.api.controller.model.authentication.AuthModel;
+import com.freshplanner.api.controller.model.authentication.RegistrationModel;
 import com.freshplanner.api.service.user.UserDB;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ public abstract class ControllerTest {
 
     @Autowired
     protected MockMvc mockMvc;
-    protected UserAuthModel userAuth;
+    protected AuthModel userAuth;
     @Autowired
     private UserDB userDB;
 
@@ -57,7 +57,7 @@ public abstract class ControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
-        UserAuthModel userAuthActual = JsonFactory.convertToObject(result, UserAuthModel.class);
+        AuthModel userAuthActual = JsonFactory.convertToObject(result, AuthModel.class);
         assertNotNull(userAuthActual);
         assertNotNull(userAuthActual.getJwt());
 

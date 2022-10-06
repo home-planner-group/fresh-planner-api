@@ -41,7 +41,7 @@ public class CartController {
     }
 
     @PreAuthorize("hasRole('USER') or hasRole('EDITOR') or hasRole('ADMIN')")
-    @ApiOperation("Insert a new cart item into the database. User validation for cart ownership.")
+    @ApiOperation("Insert a new cart item into the database. UserEntity validation for cart ownership.")
     @PostMapping(path = "/insert-item/{cartId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Cart> addCartItem(@ApiParam(value = "cart db id", example = "1")
                                             @PathVariable Integer cartId,
@@ -65,7 +65,7 @@ public class CartController {
     }
 
     @PreAuthorize("hasRole('USER') or hasRole('EDITOR') or hasRole('ADMIN')")
-    @ApiOperation("Get cart by database ID. User validation for cart ownership.")
+    @ApiOperation("Get cart by database ID. UserEntity validation for cart ownership.")
     @GetMapping(path = "/get/{cartId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Cart> getCartById(@ApiParam(value = "cart db id", example = "1")
                                             @PathVariable Integer cartId) throws ElementNotFoundException, NoAccessException {
@@ -77,7 +77,7 @@ public class CartController {
     // === PUT =========================================================================================================
 
     @PreAuthorize("hasRole('USER') or hasRole('EDITOR') or hasRole('ADMIN')")
-    @ApiOperation("Update cart with additional user. User validation for cart ownership.")
+    @ApiOperation("Update cart with additional user. UserEntity validation for cart ownership.")
     @PutMapping(path = "/add-user/{cartId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Cart> addUser(@ApiParam(value = "cart db id", example = "1")
                                         @PathVariable Integer cartId,
@@ -89,7 +89,7 @@ public class CartController {
     }
 
     @PreAuthorize("hasRole('USER') or hasRole('EDITOR') or hasRole('ADMIN')")
-    @ApiOperation("Update cart by removing user. User validation for cart ownership.")
+    @ApiOperation("Update cart by removing user. UserEntity validation for cart ownership.")
     @PutMapping(path = "/remove-user/{cartId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Cart> removeUser(@ApiParam(value = "cart db id", example = "1")
                                            @PathVariable Integer cartId,
@@ -101,7 +101,7 @@ public class CartController {
     }
 
     @PreAuthorize("hasRole('USER') or hasRole('EDITOR') or hasRole('ADMIN')")
-    @ApiOperation("Update cart in the database. User validation for cart ownership.")
+    @ApiOperation("Update cart in the database. UserEntity validation for cart ownership.")
     @PutMapping(path = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Cart> updateCart(@RequestBody Cart cart) throws ElementNotFoundException, NoAccessException {
         String usernameOwner = SecurityContext.extractUsername();
@@ -110,7 +110,7 @@ public class CartController {
     }
 
     @PreAuthorize("hasRole('USER') or hasRole('EDITOR') or hasRole('ADMIN')")
-    @ApiOperation("Update cart item in the database. User validation for cart ownership.")
+    @ApiOperation("Update cart item in the database. UserEntity validation for cart ownership.")
     @PutMapping(path = "/update-item/{cartId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Cart.Item> updateCartItem(@ApiParam(value = "cart db id", example = "1")
                                                     @PathVariable Integer cartId,
@@ -123,7 +123,7 @@ public class CartController {
     // === DELETE ======================================================================================================
 
     @PreAuthorize("hasRole('USER') or hasRole('EDITOR') or hasRole('ADMIN')")
-    @ApiOperation("Delete cart item from the database by IDs. User validation for cart ownership.")
+    @ApiOperation("Delete cart item from the database by IDs. UserEntity validation for cart ownership.")
     @DeleteMapping(path = "/delete-item/{cartId}/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Cart> deleteCartItem(@ApiParam(value = "cart db id", example = "1")
                                                @PathVariable Integer cartId,
@@ -135,7 +135,7 @@ public class CartController {
     }
 
     @PreAuthorize("hasRole('USER') or hasRole('EDITOR') or hasRole('ADMIN')")
-    @ApiOperation("Delete cart from the database by ID. User validation for cart ownership - Admin exception.")
+    @ApiOperation("Delete cart from the database by ID. UserEntity validation for cart ownership - Admin exception.")
     @DeleteMapping(path = "/delete/{cartId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Cart> deleteCart(@ApiParam(value = "cart db id", example = "1")
                                            @PathVariable Integer cartId) throws ElementNotFoundException, NoAccessException {

@@ -1,8 +1,8 @@
-package com.freshplanner.api.model.authentication;
+package com.freshplanner.api.controller.model.authentication;
 
 import com.freshplanner.api.enums.RoleName;
-import com.freshplanner.api.service.user.Role;
-import com.freshplanner.api.service.user.User;
+import com.freshplanner.api.service.user.RoleEntity;
+import com.freshplanner.api.service.user.UserEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -16,9 +16,9 @@ import java.util.stream.Collectors;
 @ApiModel
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserAuthModel {
+public class AuthModel {
 
-    @ApiModelProperty(value = "User information: username", example = "Admin")
+    @ApiModelProperty(value = "UserEntity information: username", example = "Admin")
     private String username;
 
     @ApiModelProperty(value = "JWT token.", example = "header.payload.signature")
@@ -29,10 +29,10 @@ public class UserAuthModel {
 
     private List<RoleName> roles;
 
-    public UserAuthModel(User user, String jwt, String jwtType) {
+    public AuthModel(UserEntity user, String jwt, String jwtType) {
         this.username = user.getName();
         this.jwt = jwt;
         this.jwtType = jwtType;
-        this.roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toList());
+        this.roles = user.getRoles().stream().map(RoleEntity::getName).collect(Collectors.toList());
     }
 }

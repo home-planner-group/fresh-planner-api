@@ -1,9 +1,10 @@
 package com.freshplanner.api.service.user;
 
+import com.freshplanner.api.controller.model.authentication.RegistrationModel;
 import com.freshplanner.api.enums.RoleName;
 import com.freshplanner.api.exception.ElementNotFoundException;
 import com.freshplanner.api.exception.InvalidPasswordException;
-import com.freshplanner.api.model.authentication.RegistrationModel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -12,28 +13,39 @@ import java.util.Optional;
 
 
 @Component
-public record UserDB(RoleRepo roleRepo, UserRepo userRepo, PasswordEncoder encoder) {
+public class UserDB implements UserService {
+
+    private final RoleRepo roleRepo;
+    private final UserRepo userRepo;
+    private final PasswordEncoder encoder;
+
+    @Autowired
+    public UserDB(RoleRepo roleRepo, UserRepo userRepo, PasswordEncoder encoder) {
+        this.roleRepo = roleRepo;
+        this.userRepo = userRepo;
+        this.encoder = encoder;
+    }
 
     // === SELECT ======================================================================================================
 
     /**
      * @param username for DB (case-insensitive)
-     * @return {@link User} from DB
+     * @return {@link UserEntity} from DB
      * @throws ElementNotFoundException if username does not exist
      */
-    public User getUserByName(String username) throws ElementNotFoundException {
-        Optional<User> user = userRepo.findByUsername(username);
+    public UserEntity getUserByName(String username) throws ElementNotFoundException {
+        Optional<UserEntity> user = userRepo.findByUsername(username);
         if (user.isPresent()) {
             return user.get();
         } else {
-            throw new ElementNotFoundException(User.class, username);
+            throw new ElementNotFoundException(UserEntity.class, username);
         }
     }
 
     /**
-     * @return {@link List} of all available {@link Role}s
+     * @return {@link List} of all available {@link RoleEntity}s
      */
-    public List<Role> getAllRoles() {
+    public List<RoleEntity> getAllRoles() {
         return roleRepo.findAll();
     }
 
@@ -50,8 +62,8 @@ public record UserDB(RoleRepo roleRepo, UserRepo userRepo, PasswordEncoder encod
      * @param request {@link RegistrationModel} with all required information
      * @return new authentication with default role
      */
-    public User addUser(RegistrationModel request) {
-        User user = new User(request.getUsername(), request.getEmail(), encoder.encode(request.getPassword()));
+    public UserEntity addUser(RegistrationModel request) {
+        UserEntity user = new UserEntity(request.getUsername(), request.getEmail(), encoder.encode(request.getPassword()));
         user.addRole(RoleName.ROLE_USER);
         return userRepo.save(user);
     }
@@ -64,7 +76,7 @@ public record UserDB(RoleRepo roleRepo, UserRepo userRepo, PasswordEncoder encod
      * @return updated authentication
      * @throws ElementNotFoundException if username does not exist
      */
-    public User addRoleToUser(String username, RoleName role) throws ElementNotFoundException {
+    public UserEntity addRoleToUser(String username, RoleName role) throws ElementNotFoundException {
         return userRepo.save(this.getUserByName(username).addRole(role));
     }
 
@@ -74,7 +86,7 @@ public record UserDB(RoleRepo roleRepo, UserRepo userRepo, PasswordEncoder encod
      * @return updated authentication
      * @throws ElementNotFoundException if username does not exist
      */
-    public User removeRoleFromUser(String username, RoleName role) throws ElementNotFoundException {
+    public UserEntity removeRoleFromUser(String username, RoleName role) throws ElementNotFoundException {
         return userRepo.save(this.getUserByName(username).removeRole(role));
     }
 
@@ -85,8 +97,8 @@ public record UserDB(RoleRepo roleRepo, UserRepo userRepo, PasswordEncoder encod
      * @return removed authentication
      * @throws ElementNotFoundException if username does not exist
      */
-    public User deleteUserById(String username) throws ElementNotFoundException {
-        User user = this.getUserByName(username);
+    public UserEntity deleteUserById(String username) throws ElementNotFoundException {
+        UserEntity user = this.getUserByName(username);
         userRepo.delete(user);
         return user;
     }
@@ -96,12 +108,12 @@ public record UserDB(RoleRepo roleRepo, UserRepo userRepo, PasswordEncoder encod
     /**
      * @param username for DB (case-insensitive)
      * @param password for validation (encoded)
-     * @return {@link User} from DB
+     * @return {@link UserEntity} from DB
      * @throws InvalidPasswordException if password validation failed
      * @throws ElementNotFoundException if username does not exist
      */
-    private User validateCredentials(String username, String password) throws ElementNotFoundException, InvalidPasswordException {
-        User user = this.getUserByName(username);
+    private UserEntity validateCredentials(String username, String password) throws ElementNotFoundException, InvalidPasswordException {
+        UserEntity user = this.getUserByName(username);
         if (password.equals(user.getPassword()) || encoder.matches(password, user.getPassword())) {
             return user;
         } else {

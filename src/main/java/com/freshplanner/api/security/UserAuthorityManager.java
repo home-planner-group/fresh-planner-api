@@ -1,7 +1,7 @@
 package com.freshplanner.api.security;
 
 import com.freshplanner.api.exception.ElementNotFoundException;
-import com.freshplanner.api.service.user.UserDB;
+import com.freshplanner.api.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,11 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UserAuthorityManager implements UserDetailsService {
 
-    private final UserDB userDB;
+    private final UserService userService;
 
     @Autowired
-    public UserAuthorityManager(UserDB userDB) {
-        this.userDB = userDB;
+    public UserAuthorityManager(UserService userService) {
+        this.userService = userService;
     }
 
     /**
@@ -28,7 +28,7 @@ public class UserAuthorityManager implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
-            return UserAuthority.build(userDB.getUserByName(username));
+            return UserAuthority.build(userService.getUserByName(username));
         } catch (ElementNotFoundException e) {
             throw new UsernameNotFoundException(e.getId() + " not found in " + e.getTable());
         }

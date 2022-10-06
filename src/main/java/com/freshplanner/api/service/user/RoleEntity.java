@@ -19,7 +19,7 @@ import java.util.Set;
 @Getter
 @Entity(name = "Role")
 @Table(name = "roles")
-public class Role implements Serializable {
+public class RoleEntity implements Serializable {
 
     @Id
     @Enumerated(EnumType.STRING)
@@ -27,12 +27,12 @@ public class Role implements Serializable {
     private RoleName name;
 
     @ManyToMany(mappedBy = "roles")
-    private Set<User> users = new HashSet<>();
+    private Set<UserEntity> users = new HashSet<>();
 
     /**
      * Required data for a role.
      */
-    public Role(RoleName name) {
+    public RoleEntity(RoleName name) {
         this.name = name;
     }
 
@@ -43,7 +43,7 @@ public class Role implements Serializable {
      */
     @Override
     public String toString() {
-        return "Role{name=" + name + "}";
+        return "RoleEntity{name=" + name + "}";
     }
 
     /**
@@ -54,7 +54,7 @@ public class Role implements Serializable {
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || Hibernate.getClass(this) != Hibernate.getClass(obj)) return false;
-        Role role = (Role) obj;
+        RoleEntity role = (RoleEntity) obj;
         return name != null && Objects.equals(name, role.name);
     }
 

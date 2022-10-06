@@ -15,7 +15,7 @@ import java.util.Set;
 @Getter
 @Entity
 @Table(name = "users")
-public class User implements Serializable {
+public class UserEntity implements Serializable {
 
     @Id
     @Column(name = "name", nullable = false)
@@ -31,12 +31,12 @@ public class User implements Serializable {
     @JoinTable(name = "user_roles",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "name")},
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "name")})
-    private Set<Role> roles = new HashSet<>();
+    private Set<RoleEntity> roles = new HashSet<>();
 
     /**
      * Required data for a user.
      */
-    public User(String name, String email, String password) {
+    public UserEntity(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -48,8 +48,8 @@ public class User implements Serializable {
      * @param role to associate with the user
      * @return modified user
      */
-    public User addRole(RoleName role) {
-        this.roles.add(new Role(role));
+    public UserEntity addRole(RoleName role) {
+        this.roles.add(new RoleEntity(role));
         return this;
     }
 
@@ -59,13 +59,13 @@ public class User implements Serializable {
      * @param role to remove from the user
      * @return modified user
      */
-    public User removeRole(RoleName role) {
-        this.roles.remove(new Role(role));
+    public UserEntity removeRole(RoleName role) {
+        this.roles.remove(new RoleEntity(role));
         return this;
     }
 
     public boolean hasRole(RoleName role) {
-        return this.roles.contains(new Role(role));
+        return this.roles.contains(new RoleEntity(role));
     }
 
     // === OBJECT DEFAULT METHODS ======================================================================================
@@ -75,7 +75,7 @@ public class User implements Serializable {
      */
     @Override
     public String toString() {
-        return "User{" +
+        return "UserEntity{" +
                 "username=" + name +
                 ", email=" + email + "}";
     }
@@ -88,7 +88,7 @@ public class User implements Serializable {
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || Hibernate.getClass(this) != Hibernate.getClass(obj)) return false;
-        User user = (User) obj;
+        UserEntity user = (UserEntity) obj;
         return name != null && Objects.equals(name, user.name);
     }
 

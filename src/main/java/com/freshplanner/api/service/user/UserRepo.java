@@ -9,14 +9,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-interface UserRepo extends JpaRepository<User, String> {
+interface UserRepo extends JpaRepository<UserEntity, String> {
     /**
      * @param username case-insensitive query because of nativeQuery
-     * @return optional {@link User}
+     * @return optional {@link UserEntity}
      */
     @Query(value = "select * from users u where u.name = :username", nativeQuery = true)
-    Optional<User> findByUsername(@Param("username") String username);
+    Optional<UserEntity> findByUsername(@Param("username") String username);
 
-    @Query(value = "select distinct u.name from User u")
+    @Query(value = "select distinct u.name from UserEntity u")
     List<String> getAllUsernames();
 }

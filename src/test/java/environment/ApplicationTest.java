@@ -1,10 +1,10 @@
 package environment;
 
 import com.freshplanner.api.Application;
+import com.freshplanner.api.controller.model.authentication.RegistrationModel;
 import com.freshplanner.api.exception.ElementNotFoundException;
-import com.freshplanner.api.model.authentication.RegistrationModel;
-import com.freshplanner.api.service.user.User;
 import com.freshplanner.api.service.user.UserDB;
+import com.freshplanner.api.service.user.UserEntity;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +23,7 @@ import static utility.AssertionUtils.assertEquals;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class ApplicationTest {
 
-    protected User user;
+    protected UserEntity user;
     @Autowired
     private UserDB userDB;
 
@@ -32,7 +32,7 @@ public abstract class ApplicationTest {
         RegistrationModel registrationModel = DataFactory.User.registration();
         TestLogger.info("Model for operation: " + registrationModel);
 
-        User userActual = userDB.addUser(registrationModel);
+        UserEntity userActual = userDB.addUser(registrationModel);
         assertEquals(registrationModel.getUsername(), userActual.getName());
 
         user = userDB.addRoleToUser(userActual.getName(), ROLE_ADMIN);
@@ -41,7 +41,7 @@ public abstract class ApplicationTest {
 
     @AfterAll
     protected void deleteAdminUser() throws ElementNotFoundException {
-        User userActual = userDB.deleteUserById(user.getName());
+        UserEntity userActual = userDB.deleteUserById(user.getName());
         assertEquals(user, userActual);
 
         user = userActual;

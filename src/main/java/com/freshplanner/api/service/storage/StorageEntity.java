@@ -1,7 +1,7 @@
 package com.freshplanner.api.service.storage;
 
 import com.freshplanner.api.controller.model.Storage;
-import com.freshplanner.api.service.user.User;
+import com.freshplanner.api.service.user.UserEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,9 +38,9 @@ public class StorageEntity implements Serializable {
     @JoinTable(name = "user_storages",
             joinColumns = {@JoinColumn(name = "storage_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "name")})
-    private Set<User> users = new HashSet<>();
+    private Set<UserEntity> users = new HashSet<>();
 
-    public StorageEntity(User user, Storage storage) {
+    public StorageEntity(UserEntity user, Storage storage) {
         this.name = storage.getName();
         this.users.add(user);
     }
@@ -49,7 +49,7 @@ public class StorageEntity implements Serializable {
         Storage storage = new Storage();
         storage.setId(id);
         storage.setName(name);
-        storage.setUsers(users.stream().map(User::getName).collect(Collectors.toList()));
+        storage.setUsers(users.stream().map(UserEntity::getName).collect(Collectors.toList()));
         storage.setItems(storageItems.stream().map(StorageItemEntity::mapToModel).collect(Collectors.toList()));
         return storage;
     }
@@ -61,18 +61,18 @@ public class StorageEntity implements Serializable {
         return this;
     }
 
-    public StorageEntity addUser(User user) {
+    public StorageEntity addUser(UserEntity user) {
         users.add(user);
         return this;
     }
 
-    public StorageEntity removeUser(User user) {
+    public StorageEntity removeUser(UserEntity user) {
         users.remove(user);
         return this;
     }
 
     public boolean containsUser(String username) {
-        Optional<User> matchingUser = users.stream().
+        Optional<UserEntity> matchingUser = users.stream().
                 filter(p -> p.getName().equals(username)).
                 findFirst();
         return matchingUser.isPresent();

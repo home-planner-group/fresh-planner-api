@@ -4,8 +4,8 @@ import com.freshplanner.api.controller.model.Storage;
 import com.freshplanner.api.exception.ElementNotFoundException;
 import com.freshplanner.api.exception.NoAccessException;
 import com.freshplanner.api.service.product.ProductService;
-import com.freshplanner.api.service.user.User;
-import com.freshplanner.api.service.user.UserDB;
+import com.freshplanner.api.service.user.UserEntity;
+import com.freshplanner.api.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,14 +19,14 @@ public class StorageDB {
     private final StorageRepo storageRepo;
     private final StorageItemRepo storageItemRepo;
     private final ProductService productService;
-    private final UserDB userDB;
+    private final UserService userService;
 
     @Autowired
-    public StorageDB(StorageRepo storageRepo, StorageItemRepo storageItemRepo, ProductService productService, UserDB userDB) {
+    public StorageDB(StorageRepo storageRepo, StorageItemRepo storageItemRepo, ProductService productService, UserService userService) {
         this.storageRepo = storageRepo;
         this.storageItemRepo = storageItemRepo;
         this.productService = productService;
-        this.userDB = userDB;
+        this.userService = userService;
     }
 
     // === SELECT ======================================================================================================
@@ -90,7 +90,7 @@ public class StorageDB {
      */
     @Transactional
     public StorageEntity insertStorage(String username, Storage storageModel) throws ElementNotFoundException {
-        User user = userDB.getUserByName(username);
+        UserEntity user = userService.getUserByName(username);
         return storageRepo.save(new StorageEntity(user, storageModel));
     }
 
@@ -130,7 +130,7 @@ public class StorageDB {
     @Transactional
     public StorageEntity updateAddUser(String usernameOwner, int storageId, String usernameMember) throws ElementNotFoundException, NoAccessException {
         StorageEntity storage = selectStorageById(usernameOwner, storageId);
-        User user = userDB.getUserByName(usernameMember);
+        UserEntity user = userService.getUserByName(usernameMember);
         return storageRepo.save(storage.addUser(user));
     }
 
@@ -147,7 +147,7 @@ public class StorageDB {
     @Transactional
     public StorageEntity updateRemoveUser(String usernameOwner, int storageId, String usernameMember) throws ElementNotFoundException, NoAccessException {
         StorageEntity storage = selectStorageById(usernameOwner, storageId);
-        User user = userDB.getUserByName(usernameMember);
+        UserEntity user = userService.getUserByName(usernameMember);
         return storageRepo.save(storage.removeUser(user));
     }
 
