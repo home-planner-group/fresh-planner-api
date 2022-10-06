@@ -6,12 +6,14 @@ import com.freshplanner.api.service.product.ProductEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
 @NoArgsConstructor
+@ToString
 @Entity(name = "RecipeItem")
 @Table(name = "recipe_items")
 @IdClass(RecipeItemEntity.Key.class)
@@ -33,6 +35,8 @@ public class RecipeItemEntity implements Serializable {
     @Column(name = "description")
     private String description;
 
+    // === OBJECT CONSTRUCTION =========================================================================================
+
     public RecipeItemEntity(RecipeEntity recipe, ProductEntity product, Float count, String description) {
         this.recipe = recipe;
         this.product = product;
@@ -50,12 +54,16 @@ public class RecipeItemEntity implements Serializable {
         return item;
     }
 
+    // === OBJECT CHANGES ==============================================================================================
+
     public RecipeItemEntity update(Recipe.Item item) {
         // ignore recipe and product changes
         this.count = (item.getCount() != null && item.getCount() >= 0) ? item.getCount() : 0f;
         this.description = item.getDescription();
         return this;
     }
+
+    // === OBJECT ACCESS ===============================================================================================
 
     public Integer getProductId() {
         return product.getId();
@@ -89,15 +97,7 @@ public class RecipeItemEntity implements Serializable {
         return product.getFat() * count;
     }
 
-    @Override
-    public String toString() {
-        return "RecipeItem{" +
-                "recipe=" + recipe.toString() +
-                ", product=" + product.toString() +
-                ", count=" + count +
-                ", description='" + description + '\'' +
-                '}';
-    }
+    // === OBJECT DEFAULTS =============================================================================================
 
     @Override
     public boolean equals(Object o) {

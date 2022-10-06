@@ -34,6 +34,8 @@ public class RecipeEntity implements Serializable {
     @Column(name = "duration")
     private Integer duration;
 
+    // === OBJECT CONSTRUCTION =========================================================================================
+
     public RecipeEntity(Recipe recipe) {
         this.id = null; // id gets generated
         this.name = recipe.getName();
@@ -70,6 +72,8 @@ public class RecipeEntity implements Serializable {
 
     }
 
+    // === OBJECT CHANGES ==============================================================================================
+
     public RecipeEntity update(Recipe model) {
         // ignore id changes
         if (model.getName() != null) {
@@ -82,6 +86,8 @@ public class RecipeEntity implements Serializable {
         this.duration = model.getDuration();
         return this;
     }
+
+    // === OBJECT DEFAULTS =============================================================================================
 
     @Override
     public String toString() {
