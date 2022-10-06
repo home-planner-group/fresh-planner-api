@@ -1,5 +1,6 @@
 package com.freshplanner.api.service.user;
 
+import com.freshplanner.api.controller.model.User;
 import com.freshplanner.api.enums.RoleName;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @Getter
@@ -40,6 +42,14 @@ public class UserEntity implements Serializable {
         this.name = name;
         this.email = email;
         this.password = password;
+    }
+
+    public User mapToModel() {
+        User user = new User();
+        user.setUsername(name);
+        user.setEmail(email);
+        user.setRoles(roles.stream().map(RoleEntity::getName).collect(Collectors.toList()));
+        return user;
     }
 
     /**

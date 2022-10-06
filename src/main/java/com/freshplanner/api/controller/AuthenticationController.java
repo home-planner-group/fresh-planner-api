@@ -77,8 +77,7 @@ public class AuthenticationController {
     @ApiOperation("Get the userinfo about this authentication.")
     @GetMapping(path = "/info", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> getUserInfo() throws ElementNotFoundException {
-        return ResponseEntity.ok(new User(
-                userDB.getUserByName(SecurityContext.extractUsername())));
+        return ResponseEntity.ok(userDB.getUserByName(SecurityContext.extractUsername()).mapToModel());
     }
 
     @ApiOperation("Get all possible values of: Auth Database - Roles")
@@ -99,7 +98,6 @@ public class AuthenticationController {
     @ApiOperation("Delete authentication by name.")
     @DeleteMapping(path = "/delete", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> deleteUser() throws ElementNotFoundException {
-        return ResponseEntity.ok(new User(
-                userDB.deleteUserById(SecurityContext.extractUsername())));
+        return ResponseEntity.ok(userDB.deleteUserById(SecurityContext.extractUsername()).mapToModel());
     }
 }
