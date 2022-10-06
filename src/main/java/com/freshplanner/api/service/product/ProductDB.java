@@ -19,8 +19,6 @@ public class ProductDB implements ProductService {
         this.productRepo = productRepo;
     }
 
-    // === SELECT ======================================================================================================
-
     /**
      * SELECT product WHERE productId
      *
@@ -76,8 +74,6 @@ public class ProductDB implements ProductService {
         return productRepo.findAllCategories();
     }
 
-    // === INSERT ======================================================================================================
-
     /**
      * INSERT product
      *
@@ -88,9 +84,6 @@ public class ProductDB implements ProductService {
     public ProductEntity insertProduct(Product productModel) {
         return productRepo.save(new ProductEntity(productModel));
     }
-
-
-    // === UPDATE ======================================================================================================
 
     /**
      * UPDATE product
@@ -104,8 +97,6 @@ public class ProductDB implements ProductService {
         ProductEntity product = this.selectProductById(productModel.getId());
         return productRepo.save(product.update(productModel));
     }
-
-    // === DELETE ======================================================================================================
 
     /**
      * DELETE product WHERE productId

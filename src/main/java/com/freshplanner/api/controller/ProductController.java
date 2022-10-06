@@ -28,34 +28,39 @@ public class ProductController {
         this.productDB = productDB;
     }
 
-    // === POST ========================================================================================================
-
-    @ApiOperation("Insert a new product into the database.")
-    @PostMapping(path = "/insert", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Product> addProduct(@RequestBody Product productModel) {
-
-        return ResponseEntity.ok(productDB.insertProduct(productModel).mapToModel());
-    }
-
-    // === GET =========================================================================================================
-
+    /**
+     * GET
+     *
+     * @return existing products
+     */
     @ApiOperation("Get all products from the database.")
     @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Product>> getAllProducts() {
-
         return ResponseEntity.ok(
                 productDB.selectAllProducts()
                         .stream().map(ProductEntity::mapToModel).collect(Collectors.toList()));
     }
 
+    /**
+     * GET
+     *
+     * @param productId from request path
+     * @return matching object
+     * @throws ElementNotFoundException if id does not exist
+     */
     @ApiOperation("Get product by database ID.")
     @GetMapping(path = "/get/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Product> getProductById(@ApiParam(value = "product db id", example = "1")
                                                   @PathVariable Integer productId) throws ElementNotFoundException {
-
         return ResponseEntity.ok(productDB.selectProductById(productId).mapToModel());
     }
 
+    /**
+     * GET
+     *
+     * @param productName from request parameter
+     * @return matching objects
+     */
     @ApiOperation("Search products by contained name.")
     @GetMapping(path = "/search-name", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Product>> searchProductsByName(@ApiParam(value = "product name", example = "Apple")
@@ -66,6 +71,12 @@ public class ProductController {
                         .stream().map(ProductEntity::mapToModel).collect(Collectors.toList()));
     }
 
+    /**
+     * GET
+     *
+     * @param productCategory from request parameter
+     * @return matching objects
+     */
     @ApiOperation("Search products by contained category.")
     @GetMapping(path = "/search-category", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Product>> searchProductsByCategory(@ApiParam(value = "product category", example = "Apple")
@@ -76,37 +87,67 @@ public class ProductController {
                         .stream().map(ProductEntity::mapToModel).collect(Collectors.toList()));
     }
 
-    @ApiOperation("Get all existing product categories.")
-    @GetMapping(path = "/categories", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<String>> getCategories() {
-
-        return ResponseEntity.ok(productDB.selectDistinctCategories());
+    /**
+     * POST
+     *
+     * @param productModel from request body
+     * @return created object
+     */
+    @ApiOperation("Insert a new product into the database.")
+    @PostMapping(path = "/insert", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Product> addProduct(@RequestBody Product productModel) {
+        return ResponseEntity.ok(productDB.insertProduct(productModel).mapToModel());
     }
 
-    @ApiOperation("Get all existing product units.")
-    @GetMapping(path = "/units", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Unit>> getUnits() {
-
-        return ResponseEntity.ok(Unit.getAll());
-    }
-
-    // === PUT =========================================================================================================
-
+    /**
+     * PUT
+     *
+     * @param productModel from request body
+     * @return updated object
+     * @throws ElementNotFoundException if id does not exist
+     */
     @ApiOperation("Update product in the database.")
     @PutMapping(path = "/update", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Product> updateProduct(@RequestBody Product productModel) throws ElementNotFoundException {
-
         return ResponseEntity.ok(productDB.updateProduct(productModel).mapToModel());
     }
 
-    // === DELETE ======================================================================================================
-
-    @PreAuthorize("hasRole('EDITOR') or hasRole('ADMIN')")
+    /**
+     * DELETE
+     *
+     * @param productId from request path
+     * @return deleted object
+     * @throws ElementNotFoundException if id does not exist
+     */
     @ApiOperation("Delete product from the database by ID.")
+    @PreAuthorize("hasRole('EDITOR') or hasRole('ADMIN')")
     @DeleteMapping(path = "/delete/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Product> deleteProduct(@ApiParam(value = "product db id", example = "1")
                                                  @PathVariable Integer productId) throws ElementNotFoundException {
-
         return ResponseEntity.ok(productDB.deleteProductById(productId).mapToModel());
+    }
+
+    // === OPTION REQUESTS =============================================================================================
+
+    /**
+     * GET
+     *
+     * @return existing categories
+     */
+    @ApiOperation("Get all existing product categories.")
+    @GetMapping(path = "/categories", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<String>> getCategories() {
+        return ResponseEntity.ok(productDB.selectDistinctCategories());
+    }
+
+    /**
+     * GET
+     *
+     * @return existing units
+     */
+    @ApiOperation("Get all existing product units.")
+    @GetMapping(path = "/units", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Unit>> getUnits() {
+        return ResponseEntity.ok(Unit.getAll());
     }
 }
