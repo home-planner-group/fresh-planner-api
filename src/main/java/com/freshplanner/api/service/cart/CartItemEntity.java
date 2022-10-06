@@ -1,10 +1,9 @@
 package com.freshplanner.api.service.cart;
 
-import com.freshplanner.api.model.cart.CartModel;
+import com.freshplanner.api.controller.model.Cart;
 import com.freshplanner.api.service.product.ProductEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -12,16 +11,15 @@ import java.io.Serializable;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
 @Entity(name = "CartItem")
 @Table(name = "cart_items")
-@IdClass(CartItem.Key.class)
-public class CartItem {
+@IdClass(CartItemEntity.Key.class)
+public class CartItemEntity {
 
     @Id
     @ManyToOne
     @JoinColumn(name = "cart_id", referencedColumnName = "id", nullable = false)
-    private Cart cart;
+    private CartEntity cart;
 
     @Id
     @ManyToOne
@@ -31,13 +29,36 @@ public class CartItem {
     @Column(name = "count", nullable = false)
     private Float count;
 
-    public CartItem update(CartModel.Item model) {
+    public Cart.Item mapToModel() {
+        Cart.Item item = new Cart.Item();
+        item.setProductId(product.getId());
+        item.setProductName(product.getName());
+        item.setCategory(product.getCategory());
+        item.setPackageSize(product.getPackageSize());
+        item.setCount(count);
+        item.setUnit(product.getUnit());
+        return item;
+    }
+
+    public CartItemEntity update(Cart.Item model) {
         if (model.getCount() != null && model.getCount() >= 0) {
             this.count = model.getCount();
         } else {
             this.count = 0f;
         }
         return this;
+    }
+
+    public CartEntity getCart() {
+        return cart;
+    }
+
+    public ProductEntity getProduct() {
+        return product;
+    }
+
+    public Float getCount() {
+        return count != null ? count : 0;
     }
 
     // === ID CLASS ====================================================================================================

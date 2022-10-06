@@ -33,7 +33,7 @@ public class Recipe {
     private Float protein;
     @ApiModelProperty(value = "Fat per 100g", example = "10")
     private Float fat;
-
+    @ApiModelProperty(value = "List of items")
     private List<Item> items;
 
     @Data

@@ -1,9 +1,8 @@
 package com.freshplanner.api.service.cart;
 
+import com.freshplanner.api.controller.model.Cart;
 import com.freshplanner.api.exception.ElementNotFoundException;
 import com.freshplanner.api.exception.NoAccessException;
-import com.freshplanner.api.model.cart.CartModel;
-import com.freshplanner.api.model.cart.CartSummaryModel;
 import com.freshplanner.api.service.product.ProductService;
 import com.freshplanner.api.service.user.User;
 import com.freshplanner.api.service.user.UserDB;
@@ -41,21 +40,21 @@ public class CartDB {
      * @throws ElementNotFoundException if id does not exist
      * @throws NoAccessException        if user is no owner
      */
-    public Cart selectCartById(String username, Integer cartId) throws ElementNotFoundException, NoAccessException {
-        Cart cart = selectCartById(cartId);
+    public CartEntity selectCartById(String username, Integer cartId) throws ElementNotFoundException, NoAccessException {
+        CartEntity cart = selectCartById(cartId);
         if (cart.containsUser(username)) {
             return cart;
         } else {
-            throw new NoAccessException(username, Cart.class, cartId.toString());
+            throw new NoAccessException(username, CartEntity.class, cartId.toString());
         }
     }
 
-    private Cart selectCartById(Integer cartId) throws ElementNotFoundException {
-        Optional<Cart> cart = cartRepo.findById(cartId);
+    private CartEntity selectCartById(Integer cartId) throws ElementNotFoundException {
+        Optional<CartEntity> cart = cartRepo.findById(cartId);
         if (cart.isPresent()) {
             return cart.get();
         } else {
-            throw new ElementNotFoundException(Cart.class, cartId.toString());
+            throw new ElementNotFoundException(CartEntity.class, cartId.toString());
         }
     }
 
@@ -65,17 +64,17 @@ public class CartDB {
      * @param username as owner
      * @return list with result objects
      */
-    public List<Cart> selectUserCarts(String username) {
+    public List<CartEntity> selectUserCarts(String username) {
         return cartRepo.findCartsByUsername(username);
     }
 
-    private CartItem selectCartItemById(Integer cartId, Integer productId) throws ElementNotFoundException {
-        CartItem.Key id = new CartItem.Key(cartId, productId);
-        Optional<CartItem> item = cartItemRepo.findById(id);
+    private CartItemEntity selectCartItemById(Integer cartId, Integer productId) throws ElementNotFoundException {
+        CartItemEntity.Key id = new CartItemEntity.Key(cartId, productId);
+        Optional<CartItemEntity> item = cartItemRepo.findById(id);
         if (item.isPresent()) {
             return item.get();
         } else {
-            throw new ElementNotFoundException(CartItem.class, id.toString());
+            throw new ElementNotFoundException(CartItemEntity.class, id.toString());
         }
     }
 
@@ -90,9 +89,9 @@ public class CartDB {
      * @throws ElementNotFoundException if id does not exist
      */
     @Transactional
-    public Cart insertCart(String username, CartSummaryModel cartModel) throws ElementNotFoundException {
+    public CartEntity insertCart(String username, Cart cartModel) throws ElementNotFoundException {
         User user = userDB.getUserByName(username);
-        return cartRepo.save(new Cart(user, cartModel));
+        return cartRepo.save(new CartEntity(user, cartModel));
     }
 
     /**
@@ -106,9 +105,9 @@ public class CartDB {
      * @throws NoAccessException        if user is no owner
      */
     @Transactional
-    public Cart insertCartItem(String username, int cartId, CartModel.Item cartItemModel) throws ElementNotFoundException, NoAccessException {
-        Cart cart = selectCartById(username, cartId);
-        CartItem item = cartItemRepo.save(new CartItem(
+    public CartEntity insertCartItem(String username, int cartId, Cart.Item cartItemModel) throws ElementNotFoundException, NoAccessException {
+        CartEntity cart = selectCartById(username, cartId);
+        CartItemEntity item = cartItemRepo.save(new CartItemEntity(
                 cart,
                 productService.selectProductById(cartItemModel.getProductId()),
                 cartItemModel.getCount()));
@@ -129,8 +128,8 @@ public class CartDB {
      * @throws NoAccessException        if user is no owner
      */
     @Transactional
-    public Cart updateAddUser(String usernameOwner, int cartId, String usernameMember) throws ElementNotFoundException, NoAccessException {
-        Cart cart = selectCartById(usernameOwner, cartId);
+    public CartEntity updateAddUser(String usernameOwner, int cartId, String usernameMember) throws ElementNotFoundException, NoAccessException {
+        CartEntity cart = selectCartById(usernameOwner, cartId);
         User user = userDB.getUserByName(usernameMember);
         return cartRepo.save(cart.addUser(user));
     }
@@ -146,8 +145,8 @@ public class CartDB {
      * @throws NoAccessException        if user is no owner
      */
     @Transactional
-    public Cart updateRemoveUser(String usernameOwner, int cartId, String usernameMember) throws ElementNotFoundException, NoAccessException {
-        Cart cart = selectCartById(usernameOwner, cartId);
+    public CartEntity updateRemoveUser(String usernameOwner, int cartId, String usernameMember) throws ElementNotFoundException, NoAccessException {
+        CartEntity cart = selectCartById(usernameOwner, cartId);
         User user = userDB.getUserByName(usernameMember);
         return cartRepo.save(cart.removeUser(user));
     }
@@ -161,8 +160,8 @@ public class CartDB {
      * @throws NoAccessException        if user is no owner
      * @throws ElementNotFoundException if id does not exist
      */
-    public Cart updateCart(String username, CartModel cartModel) throws NoAccessException, ElementNotFoundException {
-        Cart cart = selectCartById(username, cartModel.getId());
+    public CartEntity updateCart(String username, Cart cartModel) throws NoAccessException, ElementNotFoundException {
+        CartEntity cart = selectCartById(username, cartModel.getId());
         return cartRepo.save(cart.update(cartModel));
     }
 
@@ -176,10 +175,10 @@ public class CartDB {
      * @throws ElementNotFoundException if id does not exist
      * @throws NoAccessException        if user is no owner
      */
-    public CartItem updateCartItem(String username, Integer cartId, CartModel.Item itemModel) throws ElementNotFoundException, NoAccessException {
-        CartItem item = this.selectCartItemById(cartId, itemModel.getProductId());
+    public CartItemEntity updateCartItem(String username, Integer cartId, Cart.Item itemModel) throws ElementNotFoundException, NoAccessException {
+        CartItemEntity item = this.selectCartItemById(cartId, itemModel.getProductId());
         if (!item.getCart().containsUser(username)) {
-            throw new NoAccessException(username, Cart.class, cartId.toString());
+            throw new NoAccessException(username, CartEntity.class, cartId.toString());
         }
         return cartItemRepo.save(item.update(itemModel));
     }
@@ -196,9 +195,9 @@ public class CartDB {
      * @throws ElementNotFoundException if id does not exist
      * @throws NoAccessException        if user is no owner
      */
-    public Cart deleteCartItem(String username, Integer cartId, Integer productId) throws ElementNotFoundException, NoAccessException {
-        Cart cart = this.selectCartById(username, cartId);
-        CartItem item = this.selectCartItemById(cartId, productId);
+    public CartEntity deleteCartItem(String username, Integer cartId, Integer productId) throws ElementNotFoundException, NoAccessException {
+        CartEntity cart = this.selectCartById(username, cartId);
+        CartItemEntity item = this.selectCartItemById(cartId, productId);
         cartItemRepo.delete(item);
         cart.getCartItems().remove(item);
         return cart;
@@ -213,8 +212,8 @@ public class CartDB {
      * @throws ElementNotFoundException if id does not exist
      * @throws NoAccessException        if user is no owner
      */
-    public Cart deleteCartById(String username, Integer cartId) throws ElementNotFoundException, NoAccessException {
-        Cart cart = this.selectCartById(username, cartId);
+    public CartEntity deleteCartById(String username, Integer cartId) throws ElementNotFoundException, NoAccessException {
+        CartEntity cart = this.selectCartById(username, cartId);
         cartRepo.delete(cart);
         return cart;
     }

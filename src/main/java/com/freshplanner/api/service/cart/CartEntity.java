@@ -1,7 +1,6 @@
 package com.freshplanner.api.service.cart;
 
-import com.freshplanner.api.model.cart.CartModel;
-import com.freshplanner.api.model.cart.CartSummaryModel;
+import com.freshplanner.api.controller.model.Cart;
 import com.freshplanner.api.service.user.User;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,16 +11,17 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity(name = "Cart")
 @Table(name = "carts")
-public class Cart {
+public class CartEntity {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "cart", orphanRemoval = true)
-    private final Set<CartItem> cartItems = new HashSet<>();
+    private final Set<CartItemEntity> cartItems = new HashSet<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,24 +38,33 @@ public class Cart {
             inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "name")})
     private Set<User> users = new HashSet<>();
 
-    public Cart(User user, CartSummaryModel model) {
+    public CartEntity(User user, Cart model) {
         this.name = model.getName();
         this.users.add(user);
     }
 
-    public Cart update(CartModel model) {
+    public Cart mapToModel() {
+        Cart cart = new Cart();
+        cart.setId(id);
+        cart.setName(name);
+        cart.setUsers(users.stream().map(User::getName).collect(Collectors.toList()));
+        cart.setItems(cartItems.stream().map(CartItemEntity::mapToModel).collect(Collectors.toList()));
+        return cart;
+    }
+
+    public CartEntity update(Cart model) {
         if (model.getName() != null) {
             this.name = model.getName();
         }
         return this;
     }
 
-    public Cart addUser(User user) {
+    public CartEntity addUser(User user) {
         users.add(user);
         return this;
     }
 
-    public Cart removeUser(User user) {
+    public CartEntity removeUser(User user) {
         users.remove(user);
         return this;
     }
