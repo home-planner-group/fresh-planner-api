@@ -1,9 +1,8 @@
 package com.freshplanner.api.service.storage;
 
+import com.freshplanner.api.controller.model.Storage;
 import com.freshplanner.api.exception.ElementNotFoundException;
 import com.freshplanner.api.exception.NoAccessException;
-import com.freshplanner.api.model.storage.StorageModel;
-import com.freshplanner.api.model.storage.StorageSummaryModel;
 import com.freshplanner.api.service.product.ProductService;
 import com.freshplanner.api.service.user.User;
 import com.freshplanner.api.service.user.UserDB;
@@ -41,21 +40,21 @@ public class StorageDB {
      * @throws ElementNotFoundException if id does not exist
      * @throws NoAccessException        if user is no owner
      */
-    public Storage selectStorageById(String username, Integer storageId) throws ElementNotFoundException, NoAccessException {
-        Storage storage = selectStorageById(storageId);
+    public StorageEntity selectStorageById(String username, Integer storageId) throws ElementNotFoundException, NoAccessException {
+        StorageEntity storage = selectStorageById(storageId);
         if (storage.containsUser(username)) {
             return storage;
         } else {
-            throw new NoAccessException(username, Storage.class, storageId.toString());
+            throw new NoAccessException(username, StorageEntity.class, storageId.toString());
         }
     }
 
-    private Storage selectStorageById(Integer storageId) throws ElementNotFoundException {
-        Optional<Storage> storage = storageRepo.findById(storageId);
+    private StorageEntity selectStorageById(Integer storageId) throws ElementNotFoundException {
+        Optional<StorageEntity> storage = storageRepo.findById(storageId);
         if (storage.isPresent()) {
             return storage.get();
         } else {
-            throw new ElementNotFoundException(Storage.class, storageId.toString());
+            throw new ElementNotFoundException(StorageEntity.class, storageId.toString());
         }
     }
 
@@ -65,17 +64,17 @@ public class StorageDB {
      * @param username as owner
      * @return list with result objects
      */
-    public List<Storage> selectUserStorages(String username) {
+    public List<StorageEntity> selectUserStorages(String username) {
         return storageRepo.findStoragesByUsername(username);
     }
 
-    private StorageItem selectStorageItemById(Integer storageId, Integer productId) throws ElementNotFoundException {
-        StorageItem.Key id = new StorageItem.Key(storageId, productId);
-        Optional<StorageItem> item = storageItemRepo.findById(id);
+    private StorageItemEntity selectStorageItemById(Integer storageId, Integer productId) throws ElementNotFoundException {
+        StorageItemEntity.Key id = new StorageItemEntity.Key(storageId, productId);
+        Optional<StorageItemEntity> item = storageItemRepo.findById(id);
         if (item.isPresent()) {
             return item.get();
         } else {
-            throw new ElementNotFoundException(StorageItem.class, id.toString());
+            throw new ElementNotFoundException(StorageItemEntity.class, id.toString());
         }
     }
 
@@ -90,9 +89,9 @@ public class StorageDB {
      * @throws ElementNotFoundException if id does not exist
      */
     @Transactional
-    public Storage insertStorage(String username, StorageSummaryModel storageModel) throws ElementNotFoundException {
+    public StorageEntity insertStorage(String username, Storage storageModel) throws ElementNotFoundException {
         User user = userDB.getUserByName(username);
-        return storageRepo.save(new Storage(user, storageModel));
+        return storageRepo.save(new StorageEntity(user, storageModel));
     }
 
     /**
@@ -106,9 +105,9 @@ public class StorageDB {
      * @throws NoAccessException        if user is no owner
      */
     @Transactional
-    public Storage insertStorageItem(String username, int storageId, StorageModel.Item storageItemModel) throws ElementNotFoundException, NoAccessException {
-        Storage storage = selectStorageById(username, storageId);
-        StorageItem item = storageItemRepo.save(new StorageItem(
+    public StorageEntity insertStorageItem(String username, int storageId, Storage.Item storageItemModel) throws ElementNotFoundException, NoAccessException {
+        StorageEntity storage = selectStorageById(username, storageId);
+        StorageItemEntity item = storageItemRepo.save(new StorageItemEntity(
                 storage,
                 productService.selectProductById(storageItemModel.getProductId()),
                 storageItemModel.getCount()));
@@ -129,8 +128,8 @@ public class StorageDB {
      * @throws NoAccessException        if user is no owner
      */
     @Transactional
-    public Storage updateAddUser(String usernameOwner, int storageId, String usernameMember) throws ElementNotFoundException, NoAccessException {
-        Storage storage = selectStorageById(usernameOwner, storageId);
+    public StorageEntity updateAddUser(String usernameOwner, int storageId, String usernameMember) throws ElementNotFoundException, NoAccessException {
+        StorageEntity storage = selectStorageById(usernameOwner, storageId);
         User user = userDB.getUserByName(usernameMember);
         return storageRepo.save(storage.addUser(user));
     }
@@ -146,8 +145,8 @@ public class StorageDB {
      * @throws NoAccessException        if user is no owner
      */
     @Transactional
-    public Storage updateRemoveUser(String usernameOwner, int storageId, String usernameMember) throws ElementNotFoundException, NoAccessException {
-        Storage storage = selectStorageById(usernameOwner, storageId);
+    public StorageEntity updateRemoveUser(String usernameOwner, int storageId, String usernameMember) throws ElementNotFoundException, NoAccessException {
+        StorageEntity storage = selectStorageById(usernameOwner, storageId);
         User user = userDB.getUserByName(usernameMember);
         return storageRepo.save(storage.removeUser(user));
     }
@@ -161,8 +160,8 @@ public class StorageDB {
      * @throws NoAccessException        if user is no owner
      * @throws ElementNotFoundException if id does not exist
      */
-    public Storage updateStorage(String username, StorageModel storageModel) throws NoAccessException, ElementNotFoundException {
-        Storage storage = this.selectStorageById(username, storageModel.getId());
+    public StorageEntity updateStorage(String username, Storage storageModel) throws NoAccessException, ElementNotFoundException {
+        StorageEntity storage = this.selectStorageById(username, storageModel.getId());
         return storageRepo.save(storage.update(storageModel));
     }
 
@@ -176,10 +175,10 @@ public class StorageDB {
      * @throws ElementNotFoundException if id does not exist
      * @throws NoAccessException        if user is no owner
      */
-    public StorageItem updateStorageItem(String username, Integer storageId, StorageModel.Item itemModel) throws ElementNotFoundException, NoAccessException {
-        StorageItem item = this.selectStorageItemById(storageId, itemModel.getProductId());
+    public StorageItemEntity updateStorageItem(String username, Integer storageId, Storage.Item itemModel) throws ElementNotFoundException, NoAccessException {
+        StorageItemEntity item = this.selectStorageItemById(storageId, itemModel.getProductId());
         if (!item.getStorage().containsUser(username)) {
-            throw new NoAccessException(username, Storage.class, storageId.toString());
+            throw new NoAccessException(username, StorageEntity.class, storageId.toString());
         }
         return storageItemRepo.save(item.update(itemModel));
     }
@@ -196,9 +195,9 @@ public class StorageDB {
      * @throws ElementNotFoundException if id does not exist
      * @throws NoAccessException        if user is no owner
      */
-    public Storage deleteStorageItem(String username, Integer storageId, Integer productId) throws ElementNotFoundException, NoAccessException {
-        Storage storage = this.selectStorageById(username, storageId);
-        StorageItem item = this.selectStorageItemById(storageId, productId);
+    public StorageEntity deleteStorageItem(String username, Integer storageId, Integer productId) throws ElementNotFoundException, NoAccessException {
+        StorageEntity storage = this.selectStorageById(username, storageId);
+        StorageItemEntity item = this.selectStorageItemById(storageId, productId);
         storageItemRepo.delete(item);
         storage.getStorageItems().remove(item);
         return storage;
@@ -213,8 +212,8 @@ public class StorageDB {
      * @throws ElementNotFoundException if id does not exist
      * @throws NoAccessException        if user is no owner
      */
-    public Storage deleteStorageById(String username, Integer storageId) throws ElementNotFoundException, NoAccessException {
-        Storage storage = this.selectStorageById(username, storageId);
+    public StorageEntity deleteStorageById(String username, Integer storageId) throws ElementNotFoundException, NoAccessException {
+        StorageEntity storage = this.selectStorageById(username, storageId);
         storageRepo.delete(storage);
         return storage;
     }

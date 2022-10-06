@@ -1,7 +1,6 @@
 package com.freshplanner.api.service.storage;
 
-import com.freshplanner.api.model.storage.StorageModel;
-import com.freshplanner.api.model.storage.StorageSummaryModel;
+import com.freshplanner.api.controller.model.Storage;
 import com.freshplanner.api.service.user.User;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -14,16 +13,17 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity(name = "Storage")
 @Table(name = "storages")
-public class Storage implements Serializable {
+public class StorageEntity implements Serializable {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "storage", orphanRemoval = true)
-    private final Set<StorageItem> storageItems = new HashSet<>();
+    private final Set<StorageItemEntity> storageItems = new HashSet<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,24 +40,33 @@ public class Storage implements Serializable {
             inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "name")})
     private Set<User> users = new HashSet<>();
 
-    public Storage(User user, StorageSummaryModel storage) {
+    public StorageEntity(User user, Storage storage) {
         this.name = storage.getName();
         this.users.add(user);
     }
 
-    public Storage update(StorageModel storageModel) {
+    public Storage mapToModel() {
+        Storage storage = new Storage();
+        storage.setId(id);
+        storage.setName(name);
+        storage.setUsers(users.stream().map(User::getName).collect(Collectors.toList()));
+        storage.setItems(storageItems.stream().map(StorageItemEntity::mapToModel).collect(Collectors.toList()));
+        return storage;
+    }
+
+    public StorageEntity update(Storage storageModel) {
         if (storageModel.getName() != null) {
             this.name = storageModel.getName();
         }
         return this;
     }
 
-    public Storage addUser(User user) {
+    public StorageEntity addUser(User user) {
         users.add(user);
         return this;
     }
 
-    public Storage removeUser(User user) {
+    public StorageEntity removeUser(User user) {
         users.remove(user);
         return this;
     }
@@ -71,7 +80,7 @@ public class Storage implements Serializable {
 
     @Override
     public String toString() {
-        return "Storage{" +
+        return "StorageEntity{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
@@ -82,7 +91,7 @@ public class Storage implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Storage storage = (Storage) o;
+        StorageEntity storage = (StorageEntity) o;
 
         if (!Objects.equals(id, storage.id)) return false;
         return Objects.equals(name, storage.name);

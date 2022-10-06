@@ -4,5 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-interface StorageItemRepo extends JpaRepository<StorageItem, StorageItem.Key> {
+interface StorageItemRepo extends JpaRepository<StorageItemEntity, StorageItemEntity.Key> {
 }

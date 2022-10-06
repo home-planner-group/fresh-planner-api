@@ -8,9 +8,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-interface StorageRepo extends JpaRepository<Storage, Integer> {
+interface StorageRepo extends JpaRepository<StorageEntity, Integer> {
 
     // native query because of non-case-sensitivity on the username
     @Query(value = "select * from storages s join user_storages us on s.id = us.storage_id where us.user_id = :username", nativeQuery = true)
-    List<Storage> findStoragesByUsername(@Param("username") String username);
+    List<StorageEntity> findStoragesByUsername(@Param("username") String username);
 }
